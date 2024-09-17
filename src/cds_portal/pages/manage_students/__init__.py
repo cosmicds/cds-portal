@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 @solara.component
-def RemoveStudentConfirmationDialog(disabled: bool, on_remove_clicked: callable = None):
+def RemoveStudentDialog(disabled: bool, on_remove_clicked: callable = None):
     active = solara.use_reactive(False)
 
     with rv.Dialog(
@@ -76,6 +76,8 @@ def Page():
             new_data.extend(
                 [
                     {
+                        "student_id": student["id"],
+                        "class_id": cls["id"],
                         "username": student["username"],
                         "created": datetime.fromisoformat(
                             student["profile_created"]
@@ -96,8 +98,7 @@ def Page():
 
     def _remove_students_from_classes():
         for row in selected_rows.value:
-            student_id = row["username"]
-            # BASE_API.remove_student_from_class(student["username"])
+            r = BASE_API.remove_student_from_class(row["student_id"], row["class_id"])
 
         _retrieve_students()
 
@@ -120,7 +121,7 @@ def Page():
                     )
                     rv.Divider(vertical=True, class_="ml-4")
                     with rv.ToolbarItems():
-                        RemoveStudentConfirmationDialog(
+                        RemoveStudentDialog(
                             disabled=len(selected_rows.value) == 0,
                             on_remove_clicked=_remove_students_from_classes,
                         )
@@ -130,6 +131,7 @@ def Page():
                     single_select=False,
                     show_select=True,
                     search=search.value,
+                    item_key="student_id",
                     v_model=selected_rows.value,
                     on_v_model=selected_rows.set,
                     headers=[
@@ -155,5 +157,11 @@ def Page():
                             "text": "Story",
                             "value": "story",
                         },
+                        {
+                            "text": "Student ID",
+                            "value": "student_id",
+                            "align": " d-none",
+                        },
+                        {"text": "Class ID", "value": "class_id", "align": " d-none"},
                     ],
                 )

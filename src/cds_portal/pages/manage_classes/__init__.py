@@ -184,7 +184,6 @@ def Page():
                     show_select=True,
                     v_model=selected_rows.value,
                     on_v_model=selected_rows.set,
-                    single_expand=False,
                     headers=[
                         {
                             "text": "Name",

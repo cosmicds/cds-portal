@@ -19,7 +19,6 @@ IMG_PATH = Path("static") / "public" / "images"
 @solara.component
 def Layout(children=[]):
     router = solara.use_router()
-    snackbar, set_snackbar = solara.use_state(True)
     route_current, routes = solara.use_route()
     show_menu = solara.use_reactive(False)
 
@@ -59,17 +58,9 @@ def Layout(children=[]):
                         "Sign in", href=auth.get_login_url(), text=True, outlined=True
                     )
                 else:
-                    # if (
-                    #     Ref(GLOBAL_STATE.fields.user.is_undefined).value
-                    #     or not Ref(GLOBAL_STATE.fields.initial_setup_finished).value
-                    # ):
                     if not (BASE_API.student_exists or BASE_API.educator_exists):
                         UserTypeSetup()
 
-                    # if not Ref(GLOBAL_STATE.fields.user.is_undefined).value:
-                    #     solara.Button("Manage Classes")
-
-                    # rv.Divider(vertical=True)
                     solara.lab.ThemeToggle()
                     rv.Btn(icon=True, children=[rv.Icon(children=["mdi-bell"])])
 
@@ -261,7 +252,10 @@ def Layout(children=[]):
                     with rv.Col(class_="text-center", cols=10, offset=1):
                         solara.Div(
                             children=[
-                                "The material contained on this website is based upon work supported by NASA under award No. 80NSSC21M0002 Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Aeronautics and Space Administration."
+                                "The material contained on this website is based upon work supported by NASA under "
+                                "award No. 80NSSC21M0002 Any opinions, findings, and conclusions or recommendations "
+                                "expressed in this material are those of the author(s) and do not necessarily reflect "
+                                "the views of the National Aeronautics and Space Administration."
                             ],
                             classes=["caption mb-4"],
                         )

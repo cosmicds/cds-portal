@@ -201,13 +201,20 @@ class BaseAPI:
         return r.json()
 
     def load_students_for_class(self, class_id: int):
-        r = self.request_session.get(f"{self.API_URL}//classes/roster/{class_id}")
+        r = self.request_session.get(f"{self.API_URL}/classes/roster/{class_id}")
         return r.json()
 
     def add_student_to_class(self, class_code: str, username: str) -> Response:
         r = self.request_session.post(
             f"{self.API_URL}/classes/join",
             json={"class_code": class_code, "username": username},
+        )
+
+        return r
+
+    def remove_student_from_class(self, student_id: int, class_id: int) -> Response:
+        r = self.request_session.delete(
+            f"{self.API_URL}/students/{student_id}/classes/{class_id}",
         )
 
         return r
