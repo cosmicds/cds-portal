@@ -176,16 +176,21 @@ class BaseAPI:
 
         return r
 
-    def create_new_class(self, name: str):
+    def create_new_class(self, name: str) -> dict:
         r = self.request_session.get(f"{self.API_URL}/educators/{self.hashed_user}")
         educator = r.json()["educator"]
 
         r = self.request_session.post(
             f"{self.API_URL}/create-class",
-            json={"educatorID": educator["id"], "name": name},
+            json={"educator_id": educator["id"], "name": name},
         )
 
-        print(r.json())
+        return r.json()
+
+    def delete_class(self, class_id: int) -> dict:
+        r = self.request_session.delete(f"{self.API_URL}/classes/{class_id}")
+
+        return r.json()
 
     def load_educator_classes(self):
         r = self.request_session.get(f"{self.API_URL}/educators/{self.hashed_user}")
@@ -200,9 +205,7 @@ class BaseAPI:
         return r.json()
 
     def load_students_for_class(self, class_id: int):
-        r = self.request_session.get(
-            f"{self.API_URL}/roster-info/{class_id}/hubbles_law"
-        )
+        r = self.request_session.get(f"{self.API_URL}//classes/roster/{class_id}")
         return r.json()
 
     @staticmethod
