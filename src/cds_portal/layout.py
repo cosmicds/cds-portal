@@ -7,6 +7,7 @@ from solara_enterprise import auth
 import httpx
 from solara.lab import Ref
 
+from .components.clipboard import CopyToClipboard
 from .state import GLOBAL_STATE, UserType
 from .remote import BASE_API
 from .components.hero import Hero
@@ -88,11 +89,22 @@ def Layout(children=[]):
                                     class_="ml-2",
                                     children=[
                                         rv.Avatar(
-                                            children=[
-                                                rv.Img(
-                                                    src=f"{auth.user.value['userinfo'].get('picture', '')}"
+                                            children=(
+                                                [
+                                                    rv.Img(
+                                                        src=f"{auth.user.value['userinfo'].get('picture', "")}"
+                                                    )
+                                                ]
+                                                if auth.user.value["userinfo"].get(
+                                                    "picture"
                                                 )
-                                            ]
+                                                is not None
+                                                else [
+                                                    rv.Icon(
+                                                        children=["mdi-account-circle"]
+                                                    )
+                                                ]
+                                            ),
                                         )
                                     ],
                                     text=True,
@@ -102,7 +114,7 @@ def Layout(children=[]):
                             }
                         ],
                     ):
-                        with rv.List(dense=True, nav=True):
+                        with rv.List(dense=True, nav=True, max_width=300):
                             with rv.ListItem():
                                 rv.ListItemAvatar(
                                     children=[
@@ -115,7 +127,10 @@ def Layout(children=[]):
                                     children=[
                                         rv.ListItemTitle(
                                             children=[
-                                                f"{auth.user.value['userinfo'].get("name", "email")}"
+                                                f"{auth.user.value['userinfo'].get("name", "email")}",
+                                                CopyToClipboard(
+                                                    student_username=BASE_API.hashed_user
+                                                ),
                                             ]
                                         ),
                                         rv.ListItemSubtitle(
@@ -183,6 +198,7 @@ def Layout(children=[]):
                                 style="width:100%",
                                 icon_name="mdi-logout",
                                 color="error",
+                                flat=True,
                                 text=False,
                                 on_click=lambda: router.push("/"),
                                 href=auth.get_logout_url(),
