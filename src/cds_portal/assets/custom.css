@@ -1,0 +1,8 @@
+/*.v-data-table__wrapper > table > tbody > tr:hover {*/
+/*  background: inherit !important;*/
+/*}*/
+
+/* This removes the solara watermark */
+.v-application--wrap > div:nth-child(2) > div:nth-child(2){
+    display: none !important;
+}
