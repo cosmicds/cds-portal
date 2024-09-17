@@ -12,6 +12,26 @@ def JoinClassDialog():
     active = solara.use_reactive(False)
     submit_count = solara.use_reactive(0)
 
+    class_code = solara.use_reactive("")
+    student_validation_message = solara.use_reactive("")
+
+    def _on_join_clicked(*args):
+        class_exists = BASE_API.validate_class_code(class_code.value)
+
+        if not class_exists:
+            student_validation_message.set("Class does not exist.")
+            return
+
+        student_response = BASE_API.add_student_to_class(
+            class_code.value, BASE_API.hashed_user
+        )
+
+        if student_response.status_code != 200:
+            student_validation_message.set(student_response.reason)
+            return
+
+        active.set(False)
+
     with rv.Dialog(
         v_model=active.value,
         on_v_model=active.set,
@@ -33,8 +53,10 @@ def JoinClassDialog():
             with rv.CardTitle():
                 rv.Html(tag="text-h5", children=["Join a New Class"])
 
-            # with rv.CardText():
-            #     JoinClass(submit_count)
+            rv.Divider()
+
+            with rv.CardText(class_="mt-8"):
+                JoinClass(class_code, student_validation_message)
 
             rv.Divider()
 
@@ -45,7 +67,7 @@ def JoinClassDialog():
                 solara.Button(
                     "Join",
                     color="success",
-                    on_click=lambda: submit_count.set(submit_count.value + 1),
+                    on_click=_on_join_clicked,
                     elevation=0,
                 )
 
@@ -82,7 +104,7 @@ def Page():
             with rv.Row(class_="pa-0 mb-8 mx-0"):
                 solara.Text("Class Overview", classes=["display-1"])
                 rv.Spacer()
-                JoinClassDialog(),
+                JoinClassDialog()
 
             rv.DataTable(
                 items=classes.value,
