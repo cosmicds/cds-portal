@@ -42,6 +42,6 @@ Then, run the following command to start the server:
 
 .. code-block:: bash
 
-   SOLARA_SESSION_SECRET_KEY="..." SOLARA_OAUTH_CLIENT_ID="..." SOLARA_OAUTH_CLIENT_SECRET="..." \
+   SOLARA_SESSION_SECRET_KEY="..." SOLARA_OAUTH_CLIENT_ID="..." SOLARA_OAUTH_CLIENT_SECRET="..."
    SOLARA_OAUTH_API_BASE_URL="..." SOLARA_OAUTH_SCOPE="openid profile email" SOLARA_SESSION_HTTPS_ONLY=false
    CDS_API_KEY="..." solara run cds_portal.pages --port=886
