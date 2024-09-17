@@ -32,119 +32,163 @@ def Layout(children=[]):
         solara.Title("Cosmic Data Stories")
 
         with rv.AppBar(elevate_on_scroll=True, app=True):
-            with solara.Link(solara.resolve_path("/")):
-                rv.Avatar(class_="me-10 ms-4", color="#cccccc", size="32")
+            with rv.Container(class_="py-0 fill-height"):
+                with solara.Link(solara.resolve_path("/")):
+                    rv.Avatar(class_="me-10 ms-4", color="#cccccc", size="32")
 
-            solara.Button(
-                "Data Stories", text=True, on_click=lambda: router.push("/data_stories")
-            )
-            solara.Button("Mini Stories", text=True, on_click=lambda: router.push("/"))
-
-            rv.Spacer()
-
-            if not Ref(GLOBAL_STATE.fields.user.is_validated).value:
                 solara.Button(
-                    "Sign in", href=auth.get_login_url(), text=True, outlined=True
+                    "Data Stories",
+                    text=True,
+                    on_click=lambda: router.push("/data_stories"),
                 )
-            else:
-                # if (
-                #     Ref(GLOBAL_STATE.fields.user.is_undefined).value
-                #     or not Ref(GLOBAL_STATE.fields.initial_setup_finished).value
-                # ):
-                if not (BASE_API.student_exists or BASE_API.educator_exists):
-                    UserTypeSetup()
+                solara.Button(
+                    "Mini Stories", text=True, on_click=lambda: router.push("/")
+                )
 
-                # if not Ref(GLOBAL_STATE.fields.user.is_undefined).value:
-                #     solara.Button("Manage Classes")
+                rv.Spacer()
 
-                with rv.Menu(
-                    offset_y=True,
-                    v_model=show_menu.value,
-                    on_v_model=show_menu.set,
-                    v_slots=[
-                        {
-                            "name": "activator",
-                            "variable": "x",
-                            "children": rv.Btn(
-                                children=[
-                                    f"{auth.user.value['userinfo'].get("name", "email")}"
-                                ],
-                                text=True,
-                                outlined=True,
-                                v_on="x.on",
-                            ),
-                        }
-                    ],
-                ):
-                    with rv.List(dense=True, nav=True, min_width=200):
+                # solara.Text(f"User Type: {BASE_API.hashed_user}")
 
-                        if (
-                            Ref(GLOBAL_STATE.fields.user.user_type).value
-                            == UserType.student
-                        ):
-                            with rv.ListItem(link=True) as classes_item:
-                                with rv.ListItemIcon():
-                                    rv.Icon(children=["mdi-account"])
+                if not Ref(GLOBAL_STATE.fields.user.is_validated).value:
+                    solara.Button(
+                        "Sign in", href=auth.get_login_url(), text=True, outlined=True
+                    )
+                else:
+                    # if (
+                    #     Ref(GLOBAL_STATE.fields.user.is_undefined).value
+                    #     or not Ref(GLOBAL_STATE.fields.initial_setup_finished).value
+                    # ):
+                    if not (BASE_API.student_exists or BASE_API.educator_exists):
+                        UserTypeSetup()
 
-                                rv.ListItemTitle(children=["My Classes"])
+                    # if not Ref(GLOBAL_STATE.fields.user.is_undefined).value:
+                    #     solara.Button("Manage Classes")
 
-                            solara.v.use_event(
-                                classes_item,
-                                "click",
-                                lambda *args: router.push("/student_classes"),
-                            )
+                    # rv.Divider(vertical=True)
+                    rv.Btn(
+                        icon=True,
+                        children=[rv.Icon(children=["mdi-brightness-6"])],
+                    )
+                    rv.Btn(icon=True, children=[rv.Icon(children=["mdi-bell"])])
+
+                    with rv.Menu(
+                        offset_y=True,
+                        offset_x=True,
+                        v_model=show_menu.value,
+                        on_v_model=show_menu.set,
+                        v_slots=[
+                            {
+                                "name": "activator",
+                                "variable": "x",
+                                "children": rv.Btn(
+                                    icon=True,
+                                    class_="ml-2",
+                                    children=[
+                                        rv.Avatar(
+                                            children=[
+                                                rv.Img(
+                                                    src="https://randomuser.me/api/portraits/women/85.jpg"
+                                                )
+                                            ]
+                                        )
+                                    ],
+                                    text=True,
+                                    outlined=True,
+                                    v_on="x.on",
+                                ),
+                            }
+                        ],
+                    ):
+                        with rv.List(dense=True, nav=True):
+                            with rv.ListItem():
+                                rv.ListItemAvatar(
+                                    children=[
+                                        rv.Img(
+                                            src=f"https://randomuser.me/api/portraits/women/85.jpg"
+                                        )
+                                    ]
+                                ),
+                                rv.ListItemContent(
+                                    children=[
+                                        rv.ListItemTitle(
+                                            children=[
+                                                f"{auth.user.value['userinfo'].get("name", "email")}"
+                                            ]
+                                        ),
+                                        rv.ListItemSubtitle(
+                                            children=[
+                                                f"{auth.user.value['userinfo'].get("email", "")}"
+                                            ]
+                                        ),
+                                    ]
+                                )
 
                             rv.Divider(class_="pb-1")
-                        elif (
-                            Ref(GLOBAL_STATE.fields.user.user_type).value
-                            == UserType.educator
-                        ):
-                            with rv.ListItem(link=True) as classes_item:
+
+                            if (
+                                Ref(GLOBAL_STATE.fields.user.user_type).value
+                                == UserType.student
+                            ):
+                                with rv.ListItem(link=True) as classes_item:
+                                    with rv.ListItemIcon():
+                                        rv.Icon(children=["mdi-account"])
+
+                                    rv.ListItemTitle(children=["My Classes"])
+
+                                solara.v.use_event(
+                                    classes_item,
+                                    "click",
+                                    lambda *args: router.push("/student_classes"),
+                                )
+
+                                rv.Divider(class_="pb-1")
+                            elif (
+                                Ref(GLOBAL_STATE.fields.user.user_type).value
+                                == UserType.educator
+                            ):
+                                with rv.ListItem(link=True) as classes_item:
+                                    with rv.ListItemIcon():
+                                        rv.Icon(children=["mdi-account"])
+
+                                    rv.ListItemTitle(children=["Manage Classes"])
+
+                                solara.v.use_event(
+                                    classes_item,
+                                    "click",
+                                    lambda *args: router.push("/manage_classes"),
+                                )
+
+                            with rv.ListItem(link=True):
                                 with rv.ListItemIcon():
-                                    rv.Icon(children=["mdi-account"])
+                                    rv.Icon(children=["mdi-settings"])
 
-                                rv.ListItemTitle(children=["Manage Classes"])
-
-                            solara.v.use_event(
-                                classes_item,
-                                "click",
-                                lambda *args: router.push("/manage_classes"),
-                            )
+                                rv.ListItemTitle(children=["Settings"])
 
                             rv.Divider(class_="pb-1")
 
-                        with rv.ListItem(
-                            link=True, href=auth.get_logout_url()
-                        ) as logout_item:
-                            with rv.ListItemIcon():
-                                rv.Icon(children=["mdi-logout"])
-
-                            rv.ListItemTitle(children=["Logout"])
-
-                        solara.v.use_event(
-                            logout_item,
-                            "click",
-                            lambda *args: router.push("/"),
-                        )
+                            solara.Button(
+                                "Logout",
+                                style="width:100%",
+                                icon_name="mdi-logout",
+                                color="error",
+                                text=False,
+                                on_click=lambda: router.push("/"),
+                                href=auth.get_logout_url(),
+                            )
 
         with rv.Content():
             if route_current.path == "/":
                 Hero()
 
-            solara.Text(
-                f"{Ref(GLOBAL_STATE.fields).value} {GLOBAL_STATE.value.user.is_undefined}"
-            )
-
             with rv.Container(
                 children=children,
                 style_="max-width: 1200px",
-                # class_="fill-height",
             ):
                 pass
 
         with rv.Footer(app=False, padless=True):
             with rv.Container():
-                with rv.Row():
+                with rv.Row(class_="d-flex justify-center"):
                     with rv.Col(class_="d-flex justify-center"):
                         rv.Btn(children=["About"], text=True)
                         rv.Btn(children=["Team"], text=True)
@@ -156,11 +200,8 @@ def Layout(children=[]):
 
                 with rv.Row():
                     with rv.Col(class_="d-flex justify-center"):
-                        rv.Html(
-                            tag="p",
-                            children=[
-                                "Copyright © 2024 The President and Fellows of Harvard College"
-                            ],
+                        solara.Text(
+                            "Copyright © 2024 The President and Fellows of Harvard College"
                         )
 
     return main
