@@ -1,6 +1,5 @@
 import solara
 from solara.alias import rv
-from ..remote import BASE_API
 
 
 @solara.component

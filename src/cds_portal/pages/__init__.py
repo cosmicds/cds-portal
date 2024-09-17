@@ -1,13 +1,7 @@
 from pathlib import Path
 
-import ipyvuetify as v
 import solara
 from solara.alias import rv
-from solara_enterprise import auth
-import httpx
-
-from ..state import GLOBAL_STATE
-from ..layout import Layout
 
 IMG_PATH = Path("static") / "public" / "images"
 

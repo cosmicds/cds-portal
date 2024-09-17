@@ -1,15 +1,13 @@
-import solara
-
-from solara.alias import rv
-import ipyvuetify as v
-
-# from ..server import manager
-from ..state import GLOBAL_STATE, UserType
-from solara.lab import Ref
 from pathlib import Path
-from ..remote import BASE_API
+
+import solara
+from solara.alias import rv
+from solara.lab import Ref
+
 from ..components.join_class import JoinClass
 from ..components.request_form import RequestForm
+from ..remote import BASE_API
+from ..state import GLOBAL_STATE, UserType
 
 IMG_PATH = Path("static") / "public" / "images"
 

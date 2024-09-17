@@ -1,10 +1,10 @@
+from datetime import datetime
+
 import solara
 from solara.alias import rv
-from datetime import date, datetime
-import shortuuid
-from ...remote import BASE_API
+
 from ...components.join_class import JoinClass
-from solara_enterprise import auth
+from ...remote import BASE_API
 
 
 @solara.component

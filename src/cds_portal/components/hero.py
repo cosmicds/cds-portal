@@ -1,10 +1,7 @@
 from pathlib import Path
 
-import ipyvuetify as v
 import solara
 from solara.alias import rv
-
-v.theme.dark = True
 
 IMG_PATH = Path("static") / "public" / "images"
 
