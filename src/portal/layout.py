@@ -12,6 +12,8 @@ from .remote import BASE_API
 from .components.hero import Hero
 from .components.setup_dialog import UserTypeSetup
 
+IMG_PATH = Path("static") / "public" / "images"
+
 
 @solara.component
 def Layout(children=[]):
@@ -32,9 +34,13 @@ def Layout(children=[]):
         solara.Title("Cosmic Data Stories")
 
         with rv.AppBar(elevate_on_scroll=True, app=True):
+
             with rv.Container(class_="py-0 fill-height"):
                 with solara.Link(solara.resolve_path("/")):
-                    rv.Avatar(class_="me-10 ms-4", color="#cccccc", size="32")
+                    with rv.Avatar(class_="mr-8", width="60", tile=True):
+                        rv.Img(
+                            src=str(IMG_PATH / "logo.webp"),
+                        )
 
                 solara.Button(
                     "Data Stories",
@@ -46,8 +52,6 @@ def Layout(children=[]):
                 )
 
                 rv.Spacer()
-
-                # solara.Text(f"User Type: {BASE_API.hashed_user}")
 
                 if not Ref(GLOBAL_STATE.fields.user.is_validated).value:
                     solara.Button(
@@ -72,8 +76,10 @@ def Layout(children=[]):
                     rv.Btn(icon=True, children=[rv.Icon(children=["mdi-bell"])])
 
                     with rv.Menu(
+                        botton=True,
+                        left=True,
                         offset_y=True,
-                        offset_x=True,
+                        offset_x=False,
                         v_model=show_menu.value,
                         on_v_model=show_menu.set,
                         v_slots=[
@@ -87,7 +93,7 @@ def Layout(children=[]):
                                         rv.Avatar(
                                             children=[
                                                 rv.Img(
-                                                    src="https://randomuser.me/api/portraits/women/85.jpg"
+                                                    src=f"{auth.user.value['userinfo'].get('picture', '')}"
                                                 )
                                             ]
                                         )
@@ -104,7 +110,7 @@ def Layout(children=[]):
                                 rv.ListItemAvatar(
                                     children=[
                                         rv.Img(
-                                            src=f"https://randomuser.me/api/portraits/women/85.jpg"
+                                            src=f"{auth.user.value['userinfo'].get('picture', '')}"
                                         )
                                     ]
                                 ),
@@ -140,15 +146,13 @@ def Layout(children=[]):
                                     "click",
                                     lambda *args: router.push("/student_classes"),
                                 )
-
-                                rv.Divider(class_="pb-1")
                             elif (
                                 Ref(GLOBAL_STATE.fields.user.user_type).value
                                 == UserType.educator
                             ):
                                 with rv.ListItem(link=True) as classes_item:
                                     with rv.ListItemIcon():
-                                        rv.Icon(children=["mdi-account"])
+                                        rv.Icon(children=["mdi-book"])
 
                                     rv.ListItemTitle(children=["Manage Classes"])
 
@@ -156,6 +160,17 @@ def Layout(children=[]):
                                     classes_item,
                                     "click",
                                     lambda *args: router.push("/manage_classes"),
+                                )
+                                with rv.ListItem(link=True) as classes_item:
+                                    with rv.ListItemIcon():
+                                        rv.Icon(children=["mdi-account-group"])
+
+                                    rv.ListItemTitle(children=["Manage Students"])
+
+                                solara.v.use_event(
+                                    classes_item,
+                                    "click",
+                                    lambda *args: router.push("/manage_students"),
                                 )
 
                             with rv.ListItem(link=True):
@@ -182,12 +197,18 @@ def Layout(children=[]):
 
             with rv.Container(
                 children=children,
+                # class_="fill-height",
                 style_="max-width: 1200px",
             ):
                 pass
 
-        with rv.Footer(app=False, padless=True):
-            with rv.Container():
+        with rv.Footer(
+            app=False,
+            padless=True,
+            # style_="background: none !important;",
+        ):
+            with rv.Container(style="background: none; max-width: 1200px"):
+
                 with rv.Row(class_="d-flex justify-center"):
                     with rv.Col(class_="d-flex justify-center"):
                         rv.Btn(children=["About"], text=True)
@@ -195,13 +216,44 @@ def Layout(children=[]):
                         rv.Btn(children=["Contact"], text=True)
                         rv.Btn(children=["Privacy"], text=True)
                         rv.Btn(children=["Digital Accessibility"], text=True)
-
                 rv.Divider()
 
                 with rv.Row():
-                    with rv.Col(class_="d-flex justify-center"):
+                    with rv.Col(cols=4):
+                        solara.Text("Cosmic Data Stories", classes=["title"])
+                        solara.HTML(
+                            unsafe_innerHTML="""
+                                Center for Astrophysics Harvard | Smithsonian<br/>
+                                60 Garden Street<br/>
+                                Cambridge, MA  02138
+                            """,
+                            classes=["text-h6"],
+                        )
+
+                    with rv.Col(cols=4):
+                        rv.Img(
+                            src=str(IMG_PATH / "NASA_logo_svg.webp"),
+                            contain=True,
+                            height="100",
+                        )
+
+                    with rv.Col(cols=4):
+                        rv.Img(
+                            src=str(IMG_PATH / "cfa_theme_logo_black.webp"),
+                            contain=True,
+                            height=50,
+                        )
+
+                with rv.Row():
+                    with rv.Col(class_="text-center", cols=10, offset=1):
+                        solara.Div(
+                            children=[
+                                "The material contained on this website is based upon work supported by NASA under award No. 80NSSC21M0002 Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Aeronautics and Space Administration."
+                            ],
+                            classes=["caption mb-4"],
+                        )
                         solara.Text(
-                            "Copyright © 2024 The President and Fellows of Harvard College"
+                            "Copyright © 2024 The President and Fellows of Harvard College",
                         )
 
     return main
