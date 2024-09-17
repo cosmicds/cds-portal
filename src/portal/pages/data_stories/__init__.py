@@ -39,7 +39,7 @@ def StoryCard():
 @solara.component
 def Page():
     with rv.ItemGroup() as main:
-        solara.Text("Data Stories", classes=["display-1"])
+        solara.Div("Data Stories", classes=["display-1", "mb-8"])
 
         with solara.ColumnsResponsive([4]):
             for i in range(3):
