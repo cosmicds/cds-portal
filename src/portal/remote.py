@@ -208,6 +208,14 @@ class BaseAPI:
         r = self.request_session.get(f"{self.API_URL}//classes/roster/{class_id}")
         return r.json()
 
+    def add_student_to_class(self, class_code: str, username: str) -> Response:
+        r = self.request_session.post(
+            f"{self.API_URL}/classes/join",
+            json={"class_code": class_code, "username": username},
+        )
+
+        return r
+
     @staticmethod
     def clear_user(state: Reactive[GlobalState]):
         Ref(state.fields.student.id).set(0)
