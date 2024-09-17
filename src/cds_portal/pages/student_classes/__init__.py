@@ -8,9 +8,8 @@ from ...remote import BASE_API
 
 
 @solara.component
-def JoinClassDialog():
+def JoinClassDialog(callback: callable = lambda: None):
     active = solara.use_reactive(False)
-    submit_count = solara.use_reactive(0)
 
     class_code = solara.use_reactive("")
     student_validation_message = solara.use_reactive("")
@@ -30,6 +29,7 @@ def JoinClassDialog():
             student_validation_message.set(student_response.reason)
             return
 
+        callback()
         active.set(False)
 
     with rv.Dialog(
@@ -104,7 +104,7 @@ def Page():
             with rv.Row(class_="pa-0 mb-8 mx-0"):
                 solara.Text("Class Overview", classes=["display-1"])
                 rv.Spacer()
-                JoinClassDialog()
+                JoinClassDialog(callback=_retrieve_classes)
 
             rv.DataTable(
                 items=classes.value,
@@ -122,7 +122,7 @@ def Page():
                     },
                     {"text": "Educator", "value": "educator"},
                     {"text": "Code", "value": "code"},
-                    {"text": "", "value": "actions", "align": "start"},
+                    {"text": "", "value": "actions", "align": "end"},
                 ],
                 v_slots=[
                     {
