@@ -122,7 +122,7 @@ def Page():
                     },
                     {"text": "Educator", "value": "educator"},
                     {"text": "Code", "value": "code"},
-                    {"text": "", "value": "actions", "align": "end"},
+                    {"text": "", "value": "actions", "align": "start"},
                 ],
                 v_slots=[
                     {

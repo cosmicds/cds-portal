@@ -69,10 +69,7 @@ def Layout(children=[]):
                     #     solara.Button("Manage Classes")
 
                     # rv.Divider(vertical=True)
-                    rv.Btn(
-                        icon=True,
-                        children=[rv.Icon(children=["mdi-brightness-6"])],
-                    )
+                    solara.lab.ThemeToggle()
                     rv.Btn(icon=True, children=[rv.Icon(children=["mdi-bell"])])
 
                     with rv.Menu(
