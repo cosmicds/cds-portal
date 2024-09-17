@@ -2,6 +2,7 @@ from pathlib import Path
 
 import solara
 from solara.alias import rv
+from ..layout import Layout
 
 IMG_PATH = Path("static") / "public" / "images"
 

@@ -1,49 +1,47 @@
 .. These are examples of badges you might want to add to your README:
    please update the URLs accordingly
 
-    .. image:: https://api.cirrus-ci.com/github/<USER>/portal.svg?branch=main
+    .. image:: https://api.cirrus-ci.com/github/<USER>/cds-portal.svg?branch=main
         :alt: Built Status
-        :target: https://cirrus-ci.com/github/<USER>/portal
-    .. image:: https://readthedocs.org/projects/portal/badge/?version=latest
+        :target: https://cirrus-ci.com/github/<USER>/cds-portal
+    .. image:: https://readthedocs.org/projects/cds-portal/badge/?version=latest
         :alt: ReadTheDocs
-        :target: https://portal.readthedocs.io/en/stable/
-    .. image:: https://img.shields.io/coveralls/github/<USER>/portal/main.svg
+        :target: https://cds-portal.readthedocs.io/en/stable/
+    .. image:: https://img.shields.io/coveralls/github/<USER>/cds-portal/main.svg
         :alt: Coveralls
-        :target: https://coveralls.io/r/<USER>/portal
-    .. image:: https://img.shields.io/pypi/v/portal.svg
+        :target: https://coveralls.io/r/<USER>/cds-portal
+    .. image:: https://img.shields.io/pypi/v/cds-portal.svg
         :alt: PyPI-Server
-        :target: https://pypi.org/project/portal/
-    .. image:: https://img.shields.io/conda/vn/conda-forge/portal.svg
+        :target: https://pypi.org/project/cds-portal/
+    .. image:: https://img.shields.io/conda/vn/conda-forge/cds-portal.svg
         :alt: Conda-Forge
-        :target: https://anaconda.org/conda-forge/portal
-    .. image:: https://pepy.tech/badge/portal/month
+        :target: https://anaconda.org/conda-forge/cds-portal
+    .. image:: https://pepy.tech/badge/cds-portal/month
         :alt: Monthly Downloads
-        :target: https://pepy.tech/project/portal
+        :target: https://pepy.tech/project/cds-portal
     .. image:: https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter
         :alt: Twitter
-        :target: https://twitter.com/portal
+        :target: https://twitter.com/cds-portal
 
-.. image:: https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold
-    :alt: Project generated with PyScaffold
-    :target: https://pyscaffold.org/
+Cosmic Data Stories Portal
+==========================
 
-|
+The portal for the Cosmic Data Stories project acts as the front-end for educators and students to manager their class
+associations and available active data stories.
 
-======
-portal
-======
+Usage
+-----
 
+To run the project locally, clone the repository and install using
 
-    Add a short description here!
+.. code-block:: bash
 
+   pip install cds-portal
 
-A longer description of your project goes here...
+Then, run the following command to start the server:
 
+.. code-block:: bash
 
-.. _pyscaffold-notes:
-
-Note
-====
-
-This project has been set up using PyScaffold 4.5. For details and usage
-information on PyScaffold see https://pyscaffold.org/.
+   SOLARA_SESSION_SECRET_KEY="..." SOLARA_OAUTH_CLIENT_ID="..." SOLARA_OAUTH_CLIENT_SECRET="..." \
+   SOLARA_OAUTH_API_BASE_URL="..." SOLARA_OAUTH_SCOPE="openid profile email" SOLARA_SESSION_HTTPS_ONLY=false
+   CDS_API_KEY="..." solara run cds_portal.pages --port=886
