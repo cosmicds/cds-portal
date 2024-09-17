@@ -127,8 +127,6 @@ class BaseAPI:
             json=payload,
         )
 
-        print(r.json())
-
         if r.status_code != 200:
             logger.error("Failed to create new user.")
         else:
@@ -199,8 +197,6 @@ class BaseAPI:
         r = self.request_session.get(
             f"{self.API_URL}/educator-classes/{educator['id']}"
         )
-
-        print(r.json())
 
         return r.json()
 
