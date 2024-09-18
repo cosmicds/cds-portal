@@ -15,8 +15,8 @@ logger = setup_logger("API")
 
 
 class BaseAPI:
-    # API_URL = "https://api.cosmicds.cfa.harvard.edu"
-    API_URL = "http://localhost:8081"
+    API_URL = "https://api.cosmicds.cfa.harvard.edu"
+    # API_URL = "http://localhost:8081"
 
     @cached_property
     def request_session(self):
