@@ -118,7 +118,7 @@ def Layout(children=[]):
                                     children=[
                                         rv.ListItemTitle(
                                             children=[
-                                                f"{auth.user.value['userinfo'].get("name", "email")}",
+                                                f"{auth.user.value['userinfo'].get('name', 'email')}",
                                                 CopyToClipboard(
                                                     student_username=BASE_API.hashed_user
                                                 ),
@@ -126,7 +126,7 @@ def Layout(children=[]):
                                         ),
                                         rv.ListItemSubtitle(
                                             children=[
-                                                f"{auth.user.value['userinfo'].get("email", "")}"
+                                                f"{auth.user.value['userinfo'].get('email', '')}"
                                             ]
                                         ),
                                     ]
