@@ -1,6 +1,6 @@
 import pytest
 
-from portal.skeleton import fib, main
+from cds_portal.skeleton import fib, main
 
 __author__ = "Nicholas Earl"
 __copyright__ = "Nicholas Earl"

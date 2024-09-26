@@ -1,8 +1,8 @@
-======
-portal
-======
+==========
+cds-portal
+==========
 
-This is the documentation of **portal**.
+This is the documentation of **cds-portal**.
 
 .. note::
 

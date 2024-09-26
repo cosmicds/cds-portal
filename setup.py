@@ -1,5 +1,5 @@
 """
-    Setup file for portal.
+    Setup file for cds-portal.
     Use setup.cfg to configure your project.
 
     This file was generated with PyScaffold 4.5.
