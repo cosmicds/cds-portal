@@ -2,6 +2,12 @@ from pydantic import BaseModel
 from enum import IntEnum
 import solara
 from solara_enterprise import auth
+from solara.server import settings
+import os
+
+
+if "AWS_EBS_URL" in os.environ:
+    settings.main.base_url = os.environ["AWS_EBS_URL"]
 
 
 class BaseState(BaseModel):
