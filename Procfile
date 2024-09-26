@@ -1,0 +1,1 @@
+web: solara run cds_portal.pages --port=8000 --no-open --production
