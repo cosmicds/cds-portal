@@ -89,7 +89,7 @@ def Page():
             cls_fmt = {
                 "name": cls["name"],
                 "code": cls["code"],
-                "educator": f"{educator_response["first_name"]} {educator_response["last_name"]}",
+                "educator": f"{educator_response['first_name']} {educator_response['last_name']}",
                 "date": datetime.fromisoformat(cls["created"]).strftime("%m/%d/%Y"),
             }
 
