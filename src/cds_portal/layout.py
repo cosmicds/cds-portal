@@ -83,7 +83,7 @@ def Layout(children=[]):
                                             children=(
                                                 [
                                                     rv.Img(
-                                                        src=f"{auth.user.value['userinfo'].get('picture', "")}"
+                                                        src=f"{auth.user.value['userinfo'].get('picture', '')}"
                                                     )
                                                 ]
                                                 if auth.user.value["userinfo"].get(
