@@ -160,7 +160,7 @@ class BaseAPI:
             json=form_data,
         )
 
-        if r.status_code != 200:
+        if r.status_code != 201:
             logger.error("Failed to create new user.")
 
             r = Response()
