@@ -11,6 +11,7 @@ def CreateClassDialog(on_create_clicked: callable = None):
     active, set_active = solara.use_state(False)  #
     text, set_text = solara.use_state("")
     stories, set_stories = solara.use_state([])
+    expected_size, set_expected_size = solara.use_state(0)
 
     with rv.Dialog(
         v_model=active,
@@ -54,6 +55,12 @@ def CreateClassDialog(on_create_clicked: callable = None):
                     multiple=False,
                 )
 
+                solara.InputInt(
+                    label="Expected size",
+                    value=expected_size,
+                    on_value=set_expected_size,
+                )
+
             rv.Divider()
 
             with rv.CardActions():
@@ -63,6 +70,7 @@ def CreateClassDialog(on_create_clicked: callable = None):
                         {
                             "name": f"{text}",
                             "stories": f"{', '.join(stories)}",
+                            "expected_size": expected_size,
                         }
                     )
                     set_active(False)

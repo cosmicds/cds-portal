@@ -174,13 +174,17 @@ class BaseAPI:
 
         return r
 
-    def create_new_class(self, name: str) -> dict:
+    def create_new_class(self, name: str, expected_size: int) -> dict:
         r = self.request_session.get(f"{self.API_URL}/educators/{self.hashed_user}")
         educator = r.json()["educator"]
 
         r = self.request_session.post(
             f"{self.API_URL}/create-class",
-            json={"educator_id": educator["id"], "name": name},
+            json={
+                "educator_id": educator["id"],
+                "name": name,
+                "expected_size": expected_size,
+            },
         )
 
         return r.json()
