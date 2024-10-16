@@ -160,6 +160,7 @@ def Page():
                 "story": "Hubble's Law",
                 "code": cls["code"],
                 "id": cls["id"],
+                "expected_size": cls["expected_size"],
             }
 
             new_classes.append(new_class)
@@ -208,6 +209,7 @@ def Page():
                         {"text": "Story", "value": "story"},
                         {"text": "Code", "value": "code"},
                         {"text": "ID", "value": "id", "align": " d-none"},
+                        {"text": "Expected size", "value": "expected_size"},
                         # {"text": "Actions", "value": "actions", "align": "end"},
                     ],
                 )
