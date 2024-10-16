@@ -11,7 +11,7 @@ def CreateClassDialog(on_create_clicked: callable = None):
     active, set_active = solara.use_state(False)  #
     text, set_text = solara.use_state("")
     stories, set_stories = solara.use_state([])
-    expected_size, set_expected_size = solara.use_state(0)
+    expected_size, set_expected_size = solara.use_state(20)
 
     with rv.Dialog(
         v_model=active,
@@ -65,6 +65,10 @@ def CreateClassDialog(on_create_clicked: callable = None):
 
             with rv.CardActions():
 
+                @solara.lab.computed
+                def create_button_disabled():
+                    return not (expected_size and text and stories)
+
                 def _add_button_clicked(*args):
                     on_create_clicked(
                         {
@@ -79,7 +83,8 @@ def CreateClassDialog(on_create_clicked: callable = None):
 
                 solara.Button("Cancel", on_click=lambda: set_active(False), elevation=0)
                 solara.Button(
-                    "Create", color="info", on_click=_add_button_clicked, elevation=0
+                    "Create", color="info", on_click=_add_button_clicked, elevation=0,
+                    disabled=create_button_disabled.value
                 )
 
     return dialog
@@ -164,7 +169,7 @@ def Page():
     solara.use_effect(_retrieve_classes, [])
 
     def _create_class_callback(class_info):
-        BASE_API.create_new_class(class_info["name"])
+        BASE_API.create_new_class(class_info["name"], class_info["expected_size"])
         _retrieve_classes()
 
     def _delete_class_callback():
