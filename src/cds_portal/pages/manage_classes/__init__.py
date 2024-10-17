@@ -12,6 +12,7 @@ def CreateClassDialog(on_create_clicked: callable = None):
     text, set_text = solara.use_state("")
     stories, set_stories = solara.use_state([])
     expected_size, set_expected_size = solara.use_state(20)
+    asynchronous, set_asynchronous = solara.use_state(False)
 
     with rv.Dialog(
         v_model=active,
@@ -61,6 +62,12 @@ def CreateClassDialog(on_create_clicked: callable = None):
                     on_value=set_expected_size,
                 )
 
+                solara.Checkbox(
+                    label="Asynchronous class",
+                    value=asynchronous,
+                    on_value=set_asynchronous,
+                )
+
             rv.Divider()
 
             with rv.CardActions():
@@ -75,6 +82,7 @@ def CreateClassDialog(on_create_clicked: callable = None):
                             "name": f"{text}",
                             "stories": f"{', '.join(stories)}",
                             "expected_size": expected_size,
+                            "asynchronous": asynchronous,
                         }
                     )
                     set_active(False)
@@ -161,6 +169,7 @@ def Page():
                 "code": cls["code"],
                 "id": cls["id"],
                 "expected_size": cls["expected_size"],
+                "asynchronous": cls["asynchronous"],
             }
 
             new_classes.append(new_class)
@@ -170,7 +179,7 @@ def Page():
     solara.use_effect(_retrieve_classes, [])
 
     def _create_class_callback(class_info):
-        BASE_API.create_new_class(class_info["name"], class_info["expected_size"])
+        BASE_API.create_new_class(class_info)
         _retrieve_classes()
 
     def _delete_class_callback():
@@ -210,6 +219,7 @@ def Page():
                         {"text": "Code", "value": "code"},
                         {"text": "ID", "value": "id", "align": " d-none"},
                         {"text": "Expected size", "value": "expected_size"},
+                        {"text": "Asynchronous", "value": "asynchronous"},
                         # {"text": "Actions", "value": "actions", "align": "end"},
                     ],
                 )
