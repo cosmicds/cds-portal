@@ -3,6 +3,8 @@ from datetime import datetime
 import solara
 from solara.alias import rv
 
+from cds_portal.components.input import IntegerInput
+
 from ...remote import BASE_API
 
 
@@ -13,6 +15,7 @@ def CreateClassDialog(on_create_clicked: callable = None):
     stories, set_stories = solara.use_state([])
     expected_size, set_expected_size = solara.use_state(20)
     asynchronous, set_asynchronous = solara.use_state(False)
+    expected_size_error = solara.use_reactive(False)
 
     with rv.Dialog(
         v_model=active,
@@ -56,10 +59,15 @@ def CreateClassDialog(on_create_clicked: callable = None):
                     multiple=False,
                 )
 
-                solara.InputInt(
+                IntegerInput(
                     label="Expected size",
                     value=expected_size,
                     on_value=set_expected_size,
+                    on_error_change=expected_size_error.set,
+                    continuous_update=True,
+                    outlined=True,
+                    hide_details="auto",
+                    classes=["pt-2"]
                 )
 
                 solara.Checkbox(
@@ -74,7 +82,8 @@ def CreateClassDialog(on_create_clicked: callable = None):
 
                 @solara.lab.computed
                 def create_button_disabled():
-                    return not (expected_size and text and stories)
+                    print(expected_size_error)
+                    return expected_size_error.value or (not (text and stories))
 
                 def _add_button_clicked(*args):
                     on_create_clicked(
