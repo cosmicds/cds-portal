@@ -123,7 +123,7 @@ class BaseAPI:
         }
 
         r = self.request_session.post(
-            f"{self.API_URL}/student-sign-up",
+            f"{self.API_URL}/students/create",
             json=payload,
         )
 
@@ -156,7 +156,7 @@ class BaseAPI:
         form_data.update({"username": self.hashed_user, "password": str(uuid.uuid4())})
 
         r = self.request_session.post(
-            f"{self.API_URL}/educator-sign-up",
+            f"{self.API_URL}/educators/create",
             json=form_data,
         )
 
@@ -174,13 +174,18 @@ class BaseAPI:
 
         return r
 
-    def create_new_class(self, name: str) -> dict:
+    def create_new_class(self, info: dict) -> dict:
         r = self.request_session.get(f"{self.API_URL}/educators/{self.hashed_user}")
         educator = r.json()["educator"]
 
         r = self.request_session.post(
-            f"{self.API_URL}/create-class",
-            json={"educator_id": educator["id"], "name": name},
+            f"{self.API_URL}/classes/create",
+            json={
+                "educator_id": educator["id"],
+                "name": info["name"],
+                "expected_size": info["expected_size"],
+                "asynchronous": info["asynchronous"],
+            },
         )
 
         return r.json()

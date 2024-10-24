@@ -3,6 +3,8 @@ from datetime import datetime
 import solara
 from solara.alias import rv
 
+from cds_portal.components.input import IntegerInput
+
 from ...remote import BASE_API
 
 
@@ -11,6 +13,9 @@ def CreateClassDialog(on_create_clicked: callable = None):
     active, set_active = solara.use_state(False)  #
     text, set_text = solara.use_state("")
     stories, set_stories = solara.use_state([])
+    expected_size, set_expected_size = solara.use_state(20)
+    asynchronous, set_asynchronous = solara.use_state(False)
+    expected_size_error = solara.use_reactive(False)
 
     with rv.Dialog(
         v_model=active,
@@ -54,15 +59,39 @@ def CreateClassDialog(on_create_clicked: callable = None):
                     multiple=False,
                 )
 
+                IntegerInput(
+                    label="Expected size",
+                    value=expected_size,
+                    on_value=set_expected_size,
+                    on_error_change=expected_size_error.set,
+                    continuous_update=True,
+                    outlined=True,
+                    hide_details="auto",
+                    classes=["pt-2"]
+                )
+
+                solara.Checkbox(
+                    label="Asynchronous class",
+                    value=asynchronous,
+                    on_value=set_asynchronous,
+                )
+
             rv.Divider()
 
             with rv.CardActions():
+
+                @solara.lab.computed
+                def create_button_disabled():
+                    print(expected_size_error)
+                    return expected_size_error.value or (not (text and stories))
 
                 def _add_button_clicked(*args):
                     on_create_clicked(
                         {
                             "name": f"{text}",
                             "stories": f"{', '.join(stories)}",
+                            "expected_size": expected_size,
+                            "asynchronous": asynchronous,
                         }
                     )
                     set_active(False)
@@ -71,7 +100,8 @@ def CreateClassDialog(on_create_clicked: callable = None):
 
                 solara.Button("Cancel", on_click=lambda: set_active(False), elevation=0)
                 solara.Button(
-                    "Create", color="info", on_click=_add_button_clicked, elevation=0
+                    "Create", color="info", on_click=_add_button_clicked, elevation=0,
+                    disabled=create_button_disabled.value
                 )
 
     return dialog
@@ -147,6 +177,8 @@ def Page():
                 "story": "Hubble's Law",
                 "code": cls["code"],
                 "id": cls["id"],
+                "expected_size": cls["expected_size"],
+                "asynchronous": cls["asynchronous"],
             }
 
             new_classes.append(new_class)
@@ -156,7 +188,7 @@ def Page():
     solara.use_effect(_retrieve_classes, [])
 
     def _create_class_callback(class_info):
-        BASE_API.create_new_class(class_info["name"])
+        BASE_API.create_new_class(class_info)
         _retrieve_classes()
 
     def _delete_class_callback():
@@ -195,6 +227,8 @@ def Page():
                         {"text": "Story", "value": "story"},
                         {"text": "Code", "value": "code"},
                         {"text": "ID", "value": "id", "align": " d-none"},
+                        {"text": "Expected size", "value": "expected_size"},
+                        {"text": "Asynchronous", "value": "asynchronous"},
                         # {"text": "Actions", "value": "actions", "align": "end"},
                     ],
                 )
