@@ -192,7 +192,7 @@ def Layout(children=[]):
                                 flat=True,
                                 text=False,
                                 on_click=lambda: router.push("/"),
-                                href=auth.get_logout_url(),
+                                href=auth.get_logout_url("/"),
                             )
 
         with rv.Content():
