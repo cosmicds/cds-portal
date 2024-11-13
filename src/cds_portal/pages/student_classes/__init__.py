@@ -136,7 +136,7 @@ def Page():
                                 # outlined=True,
                                 depressed=True,
                                 color="success",
-                                href="https://app.cosmicds.cfa.harvard.edu",
+                                href="http://cds-hub-law-demo.eba-5uqxv4pp.us-east-1.elasticbeanstalk.com/",
                                 target="_blank",
                             ),
                             # rv.Btn(
