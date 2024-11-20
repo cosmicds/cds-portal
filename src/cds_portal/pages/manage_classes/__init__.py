@@ -161,6 +161,54 @@ def DeleteClassDialog(disabled: bool, on_delete_clicked: callable = None):
 
 
 @solara.component
+def ClassActionsDialog(disabled: bool, class_data: dict):
+    active, set_active = solara.use_state(False)
+
+    with rv.Dialog(
+        v_model=active,
+        on_v_model=set_active,
+        v_slots=[
+            {
+                "name": "activator",
+                "variable": "x",
+                "children": rv.Btn(
+                    v_on="x.on",
+                    v_bind="x.attrs",
+                    disabled=disabled,
+                    text=True,
+                    children=["Modify class"],
+                    elevation=0,
+                )
+            }
+        ],
+        max_width=600,
+    ):
+        with rv.Card(outlined=True):
+            rv.CardTitle(children=["Modify Class"])
+
+            with rv.CardText():
+                solara.Div("From this dialog you can make any necessary changes to your class's configuration")
+
+            with rv.CardActions():
+                if class_data["story"] == "Hubble's Law":
+
+                    override_status = BASE_API.get_hubble_waiting_room_override(class_data["id"])["override_status"]
+
+                    def _on_checkbox_changed(value):
+                        response = BASE_API.set_hubble_waiting_room_override(class_data["id"], value)
+                        # TODO: What to do if there's an error?
+
+                    solara.Checkbox(label="Set small class override",
+                                               disabled=class_data["small_class"],
+                                               value=override_status,
+                                               on_value=_on_checkbox_changed)
+
+                    rv.Spacer()
+
+                    solara.Button("Cancel", on_click=lambda: set_active(False), elevation=0)
+
+
+@solara.component
 def Page():
     data = solara.use_reactive([])
     selected_rows = solara.use_reactive([])
@@ -168,20 +216,19 @@ def Page():
     def _retrieve_classes():
         classes_dict = BASE_API.load_educator_classes()
 
-        new_classes = []
-
-        for cls in classes_dict["classes"]:
-            new_class = {
+        new_classes = [
+            {
                 "name": cls["name"],
                 "date": datetime.fromisoformat(cls["created"]).strftime("%m/%d/%Y"),
                 "story": "Hubble's Law",
                 "code": cls["code"],
                 "id": cls["id"],
                 "expected_size": cls["expected_size"],
+                "small_class": cls["small_class"],
                 "asynchronous": cls["asynchronous"],
             }
-
-            new_classes.append(new_class)
+            for cls in classes_dict["classes"]
+        ]
 
         data.set(new_classes)
 
@@ -229,6 +276,15 @@ def Page():
                         {"text": "ID", "value": "id", "align": " d-none"},
                         {"text": "Expected size", "value": "expected_size"},
                         {"text": "Asynchronous", "value": "asynchronous"},
-                        # {"text": "Actions", "value": "actions", "align": "end"},
+                        {"text": "Actions", "value": "actions", "align": "end"},
                     ],
+                    v_slots=[
+                        {
+                            "name": "item.actions",
+                            "variable": "y",
+                            "children": [
+                                ClassActionsDialog(disabled=False, class_data="y")
+                            ]
+                        }
+                    ]
                 )
