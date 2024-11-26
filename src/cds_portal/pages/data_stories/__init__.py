@@ -5,6 +5,10 @@ from solara.alias import rv
 from ...utils import IMG_PATH
 
 
+tags = ["TEMPO", "climate", "comets", "data science", "eclipse", "milky way",
+        "nebula", "nova", "supernova"]
+
+
 stories = [
     {
         "name": "Hubble Data Story",
@@ -168,11 +172,20 @@ def StoryCard(
 
 @solara.component
 def Page():
+
+    selected, set_selected = solara.use_state([])
+
     with rv.ItemGroup() as main:
         solara.Div("Data Stories", classes=["display-1", "mb-8"])
-
+        with rv.ChipGroup(multiple=True,
+                          v_model=selected,
+                          on_v_model=set_selected,
+                          active_class="primary--text"):
+            for tag in tags:
+                rv.Chip(value=tag, children=[tag])
         with solara.ColumnsResponsive([4]):
             for story in stories:
-                StoryCard(**story)
+                if (not selected) or any(tag in selected for tag in story.get("tags", [])):
+                    StoryCard(**story)
 
     return main
