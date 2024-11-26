@@ -1,15 +1,17 @@
-from pathlib import Path
 from typing import Optional
 
 import solara
 from solara.alias import rv
 
-IMG_PATH = Path("static") / "public" / "images"
+from ...utils import IMG_PATH
+
 
 def team_member_image_url(filename: str) -> str:
     return str(IMG_PATH / "team" / filename)
 
+
 DEFAULT_IMAGE = "default.avif"
+
 
 @solara.component
 def TeamMember(
