@@ -1,3 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap');
+
+:root {
+    --jp-content-font-family: "Poppins" !important;
+    :wa
+    --jp-ui-font-family: "Poppins" !important;
+}
+
+html,
+.v-application,
+.v-application .title,
+.v-application *[class^='display'] {
+    font-family: "Poppins" !important;
+    font-weight: 200 !important;
+    font-style: normal !important;
+}
+
 /*.v-data-table__wrapper > table > tbody > tr:hover {*/
 /*  background: inherit !important;*/
 /*}*/
