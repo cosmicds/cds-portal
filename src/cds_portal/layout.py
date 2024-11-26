@@ -202,7 +202,7 @@ def Layout(children=[]):
             with rv.Container(
                 children=children,
                 # class_="fill-height",
-                style_="max-width: 1200px",
+                # style_="max-width: 1200px",
             ):
                 pass
 
@@ -215,11 +215,11 @@ def Layout(children=[]):
 
                 with rv.Row(class_="d-flex justify-center"):
                     with rv.Col(class_="d-flex justify-center"):
-                        rv.Btn(children=["About"], text=True)
-                        rv.Btn(children=["Team"], text=True)
-                        rv.Btn(children=["Contact"], text=True)
-                        rv.Btn(children=["Privacy"], text=True)
-                        rv.Btn(children=["Digital Accessibility"], text=True)
+                        solara.Button(children=["About"], text=True, on_click=lambda: router.push("/about"))
+                        solara.Button(children=["Team"], text=True, on_click=lambda: router.push("/team"))
+                        solara.Button(children=["Contact"], text=True)
+                        solara.Button(children=["Privacy"], text=True)
+                        solara.Button(children=["Digital Accessibility"], text=True)
                 rv.Divider()
 
                 with rv.Row():
