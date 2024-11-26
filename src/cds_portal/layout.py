@@ -47,9 +47,11 @@ def Layout(children=[]):
                     text=True,
                     on_click=lambda: router.push("/data_stories"),
                 )
-                solara.Button(
-                    "Mini Stories", text=True, on_click=lambda: router.push("/")
-                )
+                solara.Button(children=["About"], text=True, on_click=lambda: router.push("/about"))
+                solara.Button(children=["Team"], text=True, on_click=lambda: router.push("/team"))
+                solara.Button(children=["Contact"], text=True, on_click=lambda: router.push("/contact"))
+                # solara.Button(children=["Privacy"], text=True)
+                # solara.Button(children=["Digital Accessibility"], text=True)
 
                 rv.Spacer()
 
@@ -65,7 +67,7 @@ def Layout(children=[]):
                     rv.Btn(icon=True, children=[rv.Icon(children=["mdi-bell"])])
 
                     with rv.Menu(
-                        botton=True,
+                        bottom=True,
                         left=True,
                         offset_y=True,
                         offset_x=False,
@@ -212,15 +214,6 @@ def Layout(children=[]):
             # style_="background: none !important;",
         ):
             with rv.Container(style="background: none; max-width: 1200px"):
-
-                with rv.Row(class_="d-flex justify-center"):
-                    with rv.Col(class_="d-flex justify-center"):
-                        solara.Button(children=["About"], text=True, on_click=lambda: router.push("/about"))
-                        solara.Button(children=["Team"], text=True, on_click=lambda: router.push("/team"))
-                        solara.Button(children=["Contact"], text=True)
-                        solara.Button(children=["Privacy"], text=True)
-                        solara.Button(children=["Digital Accessibility"], text=True)
-                rv.Divider()
 
                 with rv.Row():
                     with rv.Col(cols=4):

@@ -138,11 +138,11 @@ def StoryCard(
         description: str,
         image_filename: str,
         url: str,
-        tags: Optional[list[str]] = None,
         subtitle: Optional[str] = None,
+        **kwargs
     ):
     image_url = str(IMG_PATH / "stories" / image_filename)
-    with rv.Card(max_width=400, class_="mx-auto", style_="height: 100%") as story_card:
+    with rv.Card(max_width=600, class_="mx-auto", style_="height: 100%") as story_card:
         with rv.Html(tag="a", attributes={"href": url}):
             rv.Img(
                 class_="white--text align-end",

@@ -1,4 +1,5 @@
 import solara
+from solara.alias import rv
 
 
 @solara.component
@@ -7,7 +8,7 @@ def Page():
     with solara.Div(classes=['fill-height', 'px-4']) as main:
         with solara.Row(classes=['fill-height', 'px-4']):
             with solara.Column():
-                solara.Text("A Brief History", classes=["display-1"])
+                rv.Html(tag="h2", children=["A Brief History"])
                 solara.Markdown(
                     """
         The Cosmic Data Stories (CosmicDS) project started in January 2021.
@@ -18,7 +19,4 @@ def Page():
         Stories](data-stories), along with a comprehensive prototype for classroom use."""
                 )
     
-        with solara.Row():
-            solara.Text("Objectives")
-
     return main
