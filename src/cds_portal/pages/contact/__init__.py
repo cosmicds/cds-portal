@@ -28,7 +28,7 @@ def ContactUsForm():
 
         to_email = "cosmicds@cfa.harvard.edu"
         msg = MIMEText(message)
-        msg["Subject"] = f"Message from {email}"
+        msg["Subject"] = f"Message from {name}: {email}"
         msg["From"] = from_email
         msg["To"] = to_email
 
