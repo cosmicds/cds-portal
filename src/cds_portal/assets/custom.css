@@ -1,8 +1,10 @@
+/* This, together with the two blocks below, loads our font of choice (Poppins)
+ * and sets it as the primary font to use throughout the app
+ * We need to mark everything as important to override Vuetify styling */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap');
 
 :root {
     --jp-content-font-family: "Poppins" !important;
-    :wa
     --jp-ui-font-family: "Poppins" !important;
 }
 
