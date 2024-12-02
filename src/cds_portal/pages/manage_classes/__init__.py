@@ -161,8 +161,10 @@ def DeleteClassDialog(disabled: bool, on_delete_clicked: callable = None):
 
 
 @solara.component
-def ClassActionsDialog(disabled: bool, class_data: dict):
+def ClassActionsDialog(disabled: bool, class_data: list[dict]):
     active, set_active = solara.use_state(False)
+    message, set_message = solara.use_state("")
+    message_color, set_message_color = solara.use_state("")
 
     with rv.Dialog(
         v_model=active,
@@ -183,29 +185,57 @@ def ClassActionsDialog(disabled: bool, class_data: dict):
         ],
         max_width=600,
     ):
-        with rv.Card(outlined=True):
-            rv.CardTitle(children=["Modify Class"])
 
-            with rv.CardText():
-                solara.Div("From this dialog you can make any necessary changes to your class's configuration")
+        def _update_snackbar(message: str, color: str):
+            set_message_color(color)
+            set_message(message)
 
-            with rv.CardActions():
-                if class_data["story"] == "Hubble's Law":
+        def _reset_snackbar():
+            set_message("")
 
-                    override_status = BASE_API.get_hubble_waiting_room_override(class_data["id"])["override_status"]
+        with solara.lab.Tabs(background_color="primary", dark=True):
+            for data in class_data:
+                with solara.lab.Tab(data["name"]):
+                    with rv.Card(outlined=True):
+                        rv.CardTitle(children=["Modify Class"])
 
-                    def _on_checkbox_changed(value):
-                        response = BASE_API.set_hubble_waiting_room_override(class_data["id"], value)
-                        # TODO: What to do if there's an error?
+                        with rv.CardText():
+                            solara.Div("From this dialog you can make any necessary changes to your class's configuration")
 
-                    solara.Checkbox(label="Set small class override",
-                                               disabled=class_data["small_class"],
-                                               value=override_status,
-                                               on_value=_on_checkbox_changed)
+                        with rv.CardActions():
+                            if data["story"] == "Hubble's Law":
 
-                    rv.Spacer()
+                                class_id = data["id"]
+                                override_status = BASE_API.get_hubble_waiting_room_override(class_id)["override_status"]
 
-                    solara.Button("Cancel", on_click=lambda: set_active(False), elevation=0)
+                                def _on_checkbox_changed(value):
+                                    response = BASE_API.set_hubble_waiting_room_override(class_id, value)
+                                    success = response.status_code in (200, 201)
+                                    print(response.json())
+                                    print(response.status_code)
+                                    print(success)
+                                    message = \
+                                        f"Updated waiting room status for class {class_id}" if success else \
+                                        f"There was an error updating the waiting room status for class {class_id}"
+                                    print(message)
+                                    color = "success" if success else "error"
+
+                                    _update_snackbar(message=message, color=color)
+
+                                solara.Checkbox(label="Set small class override",
+                                                disabled=data["small_class"],
+                                                value=override_status,
+                                                on_value=_on_checkbox_changed)
+
+                                rv.Spacer()
+
+                                solara.Button("Cancel", on_click=lambda: set_active(False), elevation=0)
+
+        rv.Snackbar(v_model=bool(message),
+                    on_v_model=lambda *args: _reset_snackbar(),
+                    color=message_color,
+                    timeout=5000,
+                    children=[message])
 
 
 @solara.component
@@ -241,7 +271,6 @@ def Page():
     def _delete_class_callback():
         for row in selected_rows.value:
             BASE_API.delete_class(row["code"])
-
         _retrieve_classes()
 
     with solara.Row(classes=["fill-height"]):
@@ -256,8 +285,11 @@ def Page():
                         DeleteClassDialog(
                             len(selected_rows.value) == 0, _delete_class_callback
                         )
+                        ClassActionsDialog(
+                            len(selected_rows.value) == 0, selected_rows.value
+                        )
 
-                classes_table = rv.DataTable(
+                rv.DataTable(
                     items=data.value,
                     single_select=False,
                     show_select=True,
@@ -276,15 +308,5 @@ def Page():
                         {"text": "ID", "value": "id", "align": " d-none"},
                         {"text": "Expected size", "value": "expected_size"},
                         {"text": "Asynchronous", "value": "asynchronous"},
-                        {"text": "Actions", "value": "actions", "align": "end"},
-                    ],
-                    v_slots=[
-                        {
-                            "name": "item.actions",
-                            "variable": "y",
-                            "children": [
-                                ClassActionsDialog(disabled=False, class_data="y")
-                            ]
-                        }
                     ]
                 )

@@ -235,7 +235,7 @@ class BaseAPI:
         method = self.request_session.put if value else self.request_session.delete
         r = method(
             f"{self.API_URL}/hubbles_law/waiting-room-override",
-            data={"class_id": class_id}, 
+            json={"class_id": class_id},
         )
 
         return r
