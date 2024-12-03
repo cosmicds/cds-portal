@@ -223,7 +223,7 @@ def ClassActionsDialog(disabled: bool, class_data: list[dict]):
                                     _update_snackbar(message=message, color=color)
 
                                 solara.Checkbox(label="Set small class override",
-                                                disabled=data["small_class"],
+                                                disabled=override_status or data["small_class"],
                                                 value=override_status,
                                                 on_value=_on_checkbox_changed)
 
@@ -249,7 +249,7 @@ def Page():
         new_classes = [
             {
                 "name": cls["name"],
-                "date": datetime.fromisoformat(cls["created"]).strftime("%m/%d/%Y"),
+                "date": datetime.fromisoformat(cls["created"].removesuffix("Z")).strftime("%m/%d/%Y"),
                 "story": "Hubble's Law",
                 "code": cls["code"],
                 "id": cls["id"],
