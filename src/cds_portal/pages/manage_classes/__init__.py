@@ -8,11 +8,18 @@ from cds_portal.components.input import IntegerInput
 from ...remote import BASE_API
 
 
+# If we want to remove more characters in the future
+# (or replace more with underscores)
+# switch to using re.sub
+def format_story_name(name: str):
+    return name.lower().replace("'", "").replace(" ", "_")
+
+
 @solara.component
 def CreateClassDialog(on_create_clicked: callable = None):
     active, set_active = solara.use_state(False)  #
     text, set_text = solara.use_state("")
-    stories, set_stories = solara.use_state([])
+    stories, set_stories = solara.use_state("")
     expected_size, set_expected_size = solara.use_state(20)
     asynchronous, set_asynchronous = solara.use_state(False)
     expected_size_error = solara.use_reactive(False)
@@ -92,6 +99,7 @@ def CreateClassDialog(on_create_clicked: callable = None):
                             "stories": f"{', '.join(stories)}",
                             "expected_size": expected_size,
                             "asynchronous": asynchronous,
+                            "story_name": format_story_name(stories),
                         }
                     )
                     set_active(False)
