@@ -185,6 +185,7 @@ class BaseAPI:
                 "name": info["name"],
                 "expected_size": info["expected_size"],
                 "asynchronous": info["asynchronous"],
+                "story_name": "hubbles_law",
             },
         )
 
