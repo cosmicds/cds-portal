@@ -235,12 +235,17 @@ def ClassActionsDialog(disabled: bool, class_data: list[dict]):
 
                 with rv.Container():
                     with rv.CardText():
-                        solara.Text("Set the small class override for the selected classes. If a class already has the override set, there will be no effect. "
-                                    "If the button is disabled, all of your classes are either small classes or have the override set already.")
+                        solara.Text("Set the small class override for the selected classes. If a class already has the override set, there will be no effect.")
                     with solara.Row():
-                        solara.Button(label="Set override",
+                        no_override_count = len(hubble_classes) - sum(override_statuses)
+                        no_override_classes = "class" if no_override_count == 1 else "classes"
+                        solara.Button(label=f"Set override",
                                       on_click=_on_override_button_pressed,
                                       disabled=all_overridden)
+                        rv.Alert(children=[f"This will affect {no_override_count} {no_override_classes}"],
+                                 color="info",
+                                 outlined=True,
+                                 dense=True)
 
                 rv.Spacer()
 
