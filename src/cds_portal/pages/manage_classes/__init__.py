@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import datetime
 
 import solara
@@ -193,43 +194,58 @@ def ClassActionsDialog(disabled: bool, class_data: list[dict]):
         def _reset_snackbar():
             set_message("")
 
-        with solara.lab.Tabs(background_color="primary", dark=True):
-            for data in class_data:
-                with solara.lab.Tab(data["name"]):
-                    with rv.Card(outlined=True):
-                        rv.CardTitle(children=["Modify Class"])
+        def close_dialog():
+            set_active(False)
+            _reset_snackbar()
 
-                        with rv.CardText():
-                            solara.Div("From this dialog you can make any necessary changes to your class's configuration")
+        classes_by_story = defaultdict(list)
+        for data in class_data:
+            classes_by_story[data["story"]].append(data)
 
-                        with rv.CardActions():
-                            if data["story"] == "Hubble's Law":
+        with rv.Card(outlined=True):
+            rv.CardTitle(children=["Modify Class"])
 
-                                class_id = data["id"]
-                                override_status = BASE_API.get_hubble_waiting_room_override(class_id)["override_status"]
+            with rv.CardText():
+                solara.Div("From this dialog you can make any necessary changes to the selected classes")
 
-                                def _on_checkbox_changed(value):
-                                    response = BASE_API.set_hubble_waiting_room_override(class_id, value)
-                                    success = response.status_code in (200, 201)
-                                    print(response.json())
-                                    print(response.status_code)
-                                    print(success)
-                                    message = \
-                                        f"Updated waiting room status for class {class_id}" if success else \
-                                        f"There was an error updating the waiting room status for class {class_id}"
-                                    print(message)
-                                    color = "success" if success else "error"
+            if "Hubble's Law" in classes_by_story:
 
-                                    _update_snackbar(message=message, color=color)
+                hubble_classes = classes_by_story["Hubble's Law"]
 
-                                solara.Checkbox(label="Set small class override",
-                                                disabled=override_status or data["small_class"],
-                                                value=override_status,
-                                                on_value=_on_checkbox_changed)
+                override_statuses = [BASE_API.get_hubble_waiting_room_override(data["id"])["override_status"] for data in hubble_classes]
+                all_overridden = all(override_statuses)
 
-                                rv.Spacer()
+                def _on_override_button_pressed(*args):
+                    failures = []
+                    for data in hubble_classes:
+                        class_id = data["id"]
+                        response = BASE_API.set_hubble_waiting_room_override(class_id, True)
+                        success = response.status_code in (200, 201)
+                        if not success:
+                            failures.append(class_id)
 
-                                solara.Button("Cancel", on_click=lambda: set_active(False), elevation=0)
+                    relevant_ids = failures if failures else [data["id"] for data in hubble_classes]
+                    classes_string = "class" if len(relevant_ids) == 1 else "classes"
+                    ids_string = ", ".join(str(cid) for cid in relevant_ids)
+                    message = f"There was an error updating the waiting room status for {classes_string} {ids_string}" if failures else \
+                              f"Updated waiting room status for {classes_string} {ids_string}"
+                    color = "error" if failures else "success"
+
+                    _update_snackbar(message=message, color=color)
+
+                with rv.Container():
+                    with rv.CardText():
+                        solara.Text("Set the small class override for the selected classes. If a class already has the override set, there will be no effect. "
+                                    "If the button is disabled, all of your classes are either small classes or have the override set already.")
+                    with solara.Row():
+                        solara.Button(label="Set override",
+                                      on_click=_on_override_button_pressed,
+                                      disabled=all_overridden)
+
+                rv.Spacer()
+
+                with rv.CardActions():
+                    solara.Button("Cancel", on_click=close_dialog, elevation=0)
 
         rv.Snackbar(v_model=bool(message),
                     on_v_model=lambda *args: _reset_snackbar(),
