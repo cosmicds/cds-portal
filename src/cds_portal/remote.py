@@ -225,6 +225,23 @@ class BaseAPI:
 
         return r
 
+    def get_hubble_waiting_room_override(self, class_id: int) -> dict:
+        r = self.request_session.get(
+            f"{self.API_URL}/hubbles_law/waiting-room-override/{class_id}"
+        )
+
+        return r.json()
+
+    def set_hubble_waiting_room_override(self, class_id: int, value: bool) -> Response:
+        method = self.request_session.put if value else self.request_session.delete
+        r = method(
+            f"{self.API_URL}/hubbles_law/waiting-room-override",
+            json={"class_id": class_id},
+        )
+
+        return r
+
+
     @staticmethod
     def clear_user(state: Reactive[GlobalState]):
         Ref(state.fields.student.id).set(0)
