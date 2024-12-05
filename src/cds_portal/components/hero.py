@@ -1,9 +1,7 @@
-from pathlib import Path
-
 import solara
 from solara.alias import rv
 
-IMG_PATH = Path("static") / "public" / "images"
+from ..utils import IMG_PATH
 
 
 @solara.component
