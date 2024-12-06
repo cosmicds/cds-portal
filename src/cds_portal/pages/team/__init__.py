@@ -20,7 +20,7 @@ def TeamMember(
     image_filename: Optional[str],
 ):
     image_url = team_member_image_url(image_filename or DEFAULT_IMAGE)
-    with rv.Card(class_="pb-2 ma-0", color="rgb(16, 42, 82)"):
+    with rv.Card(class_="pb-2 ma-0", color="rgb(16, 42, 82)", style_="color: white"):
         rv.Img(src=image_url, width="275px")
         solara.Div(children=[rv.Html(tag="h3", children=[name])])
         solara.Div(children=[title])
