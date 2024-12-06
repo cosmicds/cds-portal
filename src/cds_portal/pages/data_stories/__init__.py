@@ -160,12 +160,11 @@ def StoryCard(
         with rv.CardText():
             solara.Markdown(description)
 
-        with rv.CardActions():
-            solara.Button("View", elevation=0, color="primary")
-            # rv.Btn(children=["Details"], color="orange")
-            # rv.Spacer()
-            # solara.HTML("div",
-            #             unsafe_innerHTML="<a href='https://cosmicds.2i2c.cloud/hub/user-redirect/hubble/'>Create</a>")
+        # with rv.CardActions():
+        #     rv.Btn(children=["Details"], color="orange")
+        #     rv.Spacer()
+        #     solara.HTML("div",
+        #                 unsafe_innerHTML="<a href='https://cosmicds.2i2c.cloud/hub/user-redirect/hubble/'>Create</a>")
 
     return story_card
 
