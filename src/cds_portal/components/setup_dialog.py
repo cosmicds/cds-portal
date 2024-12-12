@@ -40,7 +40,10 @@ def InitialSetup():
 
     def _on_finished_clicked(*args):
         Ref(GLOBAL_STATE.fields.initial_setup_finished).set(True)
-        router.push("/student_classes")
+        if GLOBAL_STATE.value.user.user_type == UserType.student:
+            router.push("/student_classes")
+        else:
+            router.push("/manage_classes")
 
     with rv.Card():
         with rv.CardTitle():
@@ -175,7 +178,7 @@ def InitialSetup():
 
                         student_response = BASE_API.create_new_student(class_code.value)
 
-                        if student_response.status_code != 200:
+                        if student_response.status_code != 201:
                             student_validation_message.set(student_response.reason)
                             return
 
@@ -192,7 +195,7 @@ def InitialSetup():
                             form_data.value
                         )
 
-                        if educator_response.status_code != 200:
+                        if educator_response.status_code != 201:
                             educator_validation_message.set(educator_response.reason)
                             return
 
