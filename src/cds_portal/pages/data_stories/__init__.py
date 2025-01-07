@@ -143,7 +143,8 @@ def StoryCard(
     ):
     image_url = str(IMG_PATH / "stories" / image_filename)
     with rv.Card(max_width=600, class_="mx-auto", style_="height: 100%") as story_card:
-        with rv.Html(tag="a", attributes={"href": url}):
+        link_attributes = {"href": url, "target": "_blank", "rel": "noopener noreferrer"}
+        with rv.Html(tag="a", attributes=link_attributes):
             rv.Img(
                 class_="white--text align-end",
                 height="275px",
@@ -157,11 +158,19 @@ def StoryCard(
             with rv.CardSubtitle():
                 solara.Text(subtitle)
 
-        with rv.CardText():
+        # The card actions + button has a fixed height
+        with rv.CardText(style_="padding-bottom: 52px"):
             solara.Markdown(description)
-
+        
         with rv.CardActions():
-            solara.Button("View", elevation=0, color="primary")
+            rv.Btn(
+                children=["View"],
+                elevation=0,
+                color="primary",
+                attributes=link_attributes,
+                absolute=True,
+                bottom=True,
+            )
             # rv.Btn(children=["Details"], color="orange")
             # rv.Spacer()
             # solara.HTML("div",
