@@ -2,6 +2,7 @@ from datetime import datetime
 
 import solara
 from solara.alias import rv
+from solara.server import settings
 
 from ...components.join_class import JoinClass
 from ...remote import BASE_API
@@ -136,7 +137,7 @@ def Page():
                                 # outlined=True,
                                 depressed=True,
                                 color="success",
-                                href="http://cds-hub-law-demo.eba-5uqxv4pp.us-east-1.elasticbeanstalk.com/",
+                                href=f"{settings.main.base_url}hubbles-law",
                                 target="_blank",
                             ),
                             # rv.Btn(
