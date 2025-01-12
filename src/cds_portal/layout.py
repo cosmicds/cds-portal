@@ -47,9 +47,19 @@ def Layout(children=[]):
                     text=True,
                     on_click=lambda: router.push("/data_stories"),
                 )
-                solara.Button(children=["About"], text=True, on_click=lambda: router.push("/about"))
-                solara.Button(children=["Team"], text=True, on_click=lambda: router.push("/team"))
-                solara.Button(children=["Contact"], text=True, on_click=lambda: router.push("/contact"))
+                solara.Button(
+                    children=["About"],
+                    text=True,
+                    on_click=lambda: router.push("/about"),
+                )
+                solara.Button(
+                    children=["Team"], text=True, on_click=lambda: router.push("/team")
+                )
+                solara.Button(
+                    children=["Contact"],
+                    text=True,
+                    on_click=lambda: router.push("/contact"),
+                )
                 # solara.Button(children=["Privacy"], text=True)
                 # solara.Button(children=["Digital Accessibility"], text=True)
 
@@ -85,11 +95,11 @@ def Layout(children=[]):
                                             children=(
                                                 [
                                                     rv.Img(
-                                                        src=f"{auth.user.value['userinfo'].get('picture', '')}"
+                                                        src=f"{auth.user.value['userinfo'].get('cds/picture', '')}"
                                                     )
                                                 ]
                                                 if auth.user.value["userinfo"].get(
-                                                    "picture"
+                                                    "cds/picture"
                                                 )
                                                 is not None
                                                 else [
@@ -112,7 +122,7 @@ def Layout(children=[]):
                                 rv.ListItemAvatar(
                                     children=[
                                         rv.Img(
-                                            src=f"{auth.user.value['userinfo'].get('picture', '')}"
+                                            src=f"{auth.user.value['userinfo'].get('cds/picture', '')}"
                                         )
                                     ]
                                 ),
@@ -120,7 +130,7 @@ def Layout(children=[]):
                                     children=[
                                         rv.ListItemTitle(
                                             children=[
-                                                f"{auth.user.value['userinfo'].get('name', 'email')}",
+                                                f"{auth.user.value['userinfo'].get('cds/name', 'cds/email')}",
                                                 CopyToClipboard(
                                                     student_username=BASE_API.hashed_user
                                                 ),
@@ -128,7 +138,7 @@ def Layout(children=[]):
                                         ),
                                         rv.ListItemSubtitle(
                                             children=[
-                                                f"{auth.user.value['userinfo'].get('email', '')}"
+                                                f"{auth.user.value['userinfo'].get('cds/email', '')}"
                                             ]
                                         ),
                                     ]
