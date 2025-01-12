@@ -10,4 +10,3 @@ def Page():
             solara.Div("Educator Dashboard", classes=["display-1", "mb-8"])
 
             EducatorDashboard()
-

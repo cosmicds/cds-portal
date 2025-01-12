@@ -74,7 +74,7 @@ def CreateClassDialog(on_create_clicked: callable = None):
                     continuous_update=True,
                     outlined=True,
                     hide_details="auto",
-                    classes=["pt-2"]
+                    classes=["pt-2"],
                 )
 
                 solara.Checkbox(
@@ -108,8 +108,11 @@ def CreateClassDialog(on_create_clicked: callable = None):
 
                 solara.Button("Cancel", on_click=lambda: set_active(False), elevation=0)
                 solara.Button(
-                    "Create", color="info", on_click=_add_button_clicked, elevation=0,
-                    disabled=create_button_disabled.value
+                    "Create",
+                    color="info",
+                    on_click=_add_button_clicked,
+                    elevation=0,
+                    disabled=create_button_disabled.value,
                 )
 
     return dialog
@@ -216,6 +219,18 @@ def Page():
                         rv.Divider(vertical=True)
                         DeleteClassDialog(
                             len(selected_rows.value) == 0, _delete_class_callback
+                        )
+                        rv.Divider(vertical=True)
+                        solara.Button(
+                            "Dashboard",
+                            color="info",
+                            href=(
+                                f"/educator-dashboard?id={selected_rows.value[0]['id']}"
+                                if len(selected_rows.value) == 1
+                                else "/educator-dashboard"
+                            ),
+                            elevation=0,
+                            disabled=len(selected_rows.value) != 1,
                         )
 
                 classes_table = rv.DataTable(
