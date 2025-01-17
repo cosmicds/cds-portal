@@ -80,10 +80,10 @@ def Page():
                         "class_id": cls["id"],
                         "username": student["username"],
                         "created": datetime.fromisoformat(
-                            student["profile_created"]
+                            student["profile_created"].removesuffix("Z")
                         ).strftime("%m/%d/%Y"),
                         "last_visit": datetime.fromisoformat(
-                            student["last_visit"]
+                            student["last_visit"].removesuffix("Z")
                         ).strftime("%m/%d/%Y"),
                         "class": cls["name"],
                         "story": "Hubble's Law",
