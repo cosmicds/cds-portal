@@ -87,5 +87,3 @@ def RequestForm(form_data: solara.Reactive, validation_message: solara.Reactive)
                     type="error",
                     children=[f"{validation_message.value}"],
                 )
-
-            solara.Markdown(f"{form_data}")

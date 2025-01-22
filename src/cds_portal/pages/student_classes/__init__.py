@@ -81,6 +81,7 @@ def Page():
     selected_rows, set_selected_rows = solara.use_state([])
 
     def _retrieve_classes():
+        print(BASE_API.load_student_info())
         classes_response = BASE_API.load_student_classes()
         formatted_classes = []
 
@@ -91,7 +92,7 @@ def Page():
                 "name": cls["name"],
                 "code": cls["code"],
                 "educator": f"{educator_response['first_name']} {educator_response['last_name']}",
-                "date": datetime.fromisoformat(cls["created"]).strftime("%m/%d/%Y"),
+                "date": datetime.fromisoformat(cls["created"].removesuffix("Z")).strftime("%m/%d/%Y"),
             }
 
             formatted_classes.append(cls_fmt)

@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import datetime
 
 import solara
@@ -172,6 +173,104 @@ def DeleteClassDialog(disabled: bool, on_delete_clicked: callable = None):
 
 
 @solara.component
+def ClassActionsDialog(disabled: bool, class_data: list[dict]):
+    active, set_active = solara.use_state(False)
+    message, set_message = solara.use_state("")
+    message_color, set_message_color = solara.use_state("")
+
+    with rv.Dialog(
+        v_model=active,
+        on_v_model=set_active,
+        v_slots=[
+            {
+                "name": "activator",
+                "variable": "x",
+                "children": rv.Btn(
+                    v_on="x.on",
+                    v_bind="x.attrs",
+                    disabled=disabled,
+                    text=True,
+                    children=["Modify class"],
+                    elevation=0,
+                )
+            }
+        ],
+        max_width=600,
+    ):
+
+        def _update_snackbar(message: str, color: str):
+            set_message_color(color)
+            set_message(message)
+
+        def _reset_snackbar():
+            set_message("")
+
+        def close_dialog():
+            set_active(False)
+            _reset_snackbar()
+
+        classes_by_story = defaultdict(list)
+        for data in class_data:
+            classes_by_story[data["story"]].append(data)
+
+        with rv.Card(outlined=True):
+            rv.CardTitle(children=["Modify Class"])
+
+            with rv.CardText():
+                solara.Div("From this dialog you can make any necessary changes to the selected classes")
+
+            if "Hubble's Law" in classes_by_story:
+
+                hubble_classes = classes_by_story["Hubble's Law"]
+
+                override_statuses = [BASE_API.get_hubble_waiting_room_override(data["id"])["override_status"] for data in hubble_classes]
+                all_overridden = all(override_statuses)
+
+                def _on_override_button_pressed(*args):
+                    failures = []
+                    for data in hubble_classes:
+                        class_id = data["id"]
+                        response = BASE_API.set_hubble_waiting_room_override(class_id, True)
+                        success = response.status_code in (200, 201)
+                        if not success:
+                            failures.append(class_id)
+
+                    relevant_ids = failures if failures else [data["id"] for data in hubble_classes]
+                    classes_string = "class" if len(relevant_ids) == 1 else "classes"
+                    ids_string = ", ".join(str(cid) for cid in relevant_ids)
+                    message = f"There was an error updating the waiting room status for {classes_string} {ids_string}" if failures else \
+                              f"Updated waiting room status for {classes_string} {ids_string}"
+                    color = "error" if failures else "success"
+
+                    _update_snackbar(message=message, color=color)
+
+                with rv.Container():
+                    with rv.CardText():
+                        solara.Text("Set the small class override for the selected classes. If a class already has the override set, there will be no effect.")
+                    with solara.Row():
+                        no_override_count = len(hubble_classes) - sum(override_statuses)
+                        no_override_classes = "class" if no_override_count == 1 else "classes"
+                        solara.Button(label=f"Set override",
+                                      on_click=_on_override_button_pressed,
+                                      disabled=all_overridden)
+                        rv.Alert(children=[f"This will affect {no_override_count} {no_override_classes}"],
+                                 color="info",
+                                 outlined=True,
+                                 dense=True)
+
+                rv.Spacer()
+
+                with rv.CardActions():
+                    solara.Button("Cancel", on_click=close_dialog, elevation=0)
+
+        rv.Snackbar(v_model=bool(message),
+                    on_v_model=lambda *args: _reset_snackbar(),
+                    color=message_color,
+                    timeout=5000,
+                    children=[message])
+
+
+@solara.component
 def Page():
     data = solara.use_reactive([])
     selected_rows = solara.use_reactive([])
@@ -179,20 +278,19 @@ def Page():
     def _retrieve_classes():
         classes_dict = BASE_API.load_educator_classes()
 
-        new_classes = []
-
-        for cls in classes_dict["classes"]:
-            new_class = {
+        new_classes = [
+            {
                 "name": cls["name"],
-                "date": datetime.fromisoformat(cls["created"]).strftime("%m/%d/%Y"),
+                "date": datetime.fromisoformat(cls["created"].removesuffix("Z")).strftime("%m/%d/%Y"),
                 "story": "Hubble's Law",
                 "code": cls["code"],
                 "id": cls["id"],
                 "expected_size": cls["expected_size"],
+                "small_class": cls["small_class"],
                 "asynchronous": cls["asynchronous"],
             }
-
-            new_classes.append(new_class)
+            for cls in classes_dict["classes"]
+        ]
 
         data.set(new_classes)
 
@@ -205,7 +303,6 @@ def Page():
     def _delete_class_callback():
         for row in selected_rows.value:
             BASE_API.delete_class(row["code"])
-
         _retrieve_classes()
 
     with solara.Row(classes=["fill-height"]):
@@ -232,8 +329,11 @@ def Page():
                             elevation=0,
                             disabled=len(selected_rows.value) != 1,
                         )
+                        ClassActionsDialog(
+                            len(selected_rows.value) == 0, selected_rows.value
+                        )
 
-                classes_table = rv.DataTable(
+                rv.DataTable(
                     items=data.value,
                     single_select=False,
                     show_select=True,
@@ -252,6 +352,5 @@ def Page():
                         {"text": "ID", "value": "id", "align": " d-none"},
                         {"text": "Expected size", "value": "expected_size"},
                         {"text": "Asynchronous", "value": "asynchronous"},
-                        # {"text": "Actions", "value": "actions", "align": "end"},
-                    ],
+                    ]
                 )
