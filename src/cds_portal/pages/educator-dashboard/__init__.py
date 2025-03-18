@@ -1,8 +1,7 @@
 import solara
 from ...remote import BASE_API
 from solara.alias import rv
-from ...components.educator_dashboard import EducatorDashboard
-
+from educator_dashboard.educator_dashboard import EducatorDashboard
 
 @solara.component
 def Page():
