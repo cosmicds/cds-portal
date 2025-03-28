@@ -52,12 +52,12 @@ class BaseAPI:
     @property
     def student_info(self):
         r = self.request_session.get(f"{self.API_URL}/students/{self.hashed_user}")
-        return r.json()["student"]
+        return r.json().get("student", None)
 
     @property
     def educator_info(self):
         r = self.request_session.get(f"{self.API_URL}/educators/{self.hashed_user}")
-        return r.json()["educator"]
+        return r.json().get("educator", None)
 
     @property
     def user_type_id(self) -> tuple[str | None, int | None]:
