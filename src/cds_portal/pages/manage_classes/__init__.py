@@ -219,6 +219,24 @@ def ClassActionsDialog(disabled: bool, class_data: list[dict]):
             with rv.CardText():
                 solara.Div("From this dialog you can make any necessary changes to the selected classes")
 
+            def _on_active_switched(active: bool):
+                for data in class_data:
+                    BASE_API.set_class_active(data["id"], "hubbles_law", active)
+
+            with rv.Container():
+                with rv.CardText():
+                    single_class = len(class_data) == 1
+                    classes_string = "class" if single_class else "classes"
+                    is_are_string = "is" if single_class else "are"
+                    solara.Text(f"Set whether or not the selected {classes_string} {is_are_string} active")
+                with solara.Row():
+                    any_active = any(BASE_API.get_class_active(data["id"], "hubbles_law") for data in class_data)
+                    solara.Switch(label="Set active", value=any_active, on_value=_on_active_switched)
+                    rv.Alert(children=[f"This will affect {len(class_data)} {classes_string}"],
+                             color="info",
+                             outlined=True,
+                             dense=True)
+
             if "Hubble's Law" in classes_by_story:
 
                 hubble_classes = classes_by_story["Hubble's Law"]
@@ -250,7 +268,7 @@ def ClassActionsDialog(disabled: bool, class_data: list[dict]):
                     with solara.Row():
                         no_override_count = len(hubble_classes) - sum(override_statuses)
                         no_override_classes = "class" if no_override_count == 1 else "classes"
-                        solara.Button(label=f"Set override",
+                        solara.Button(label="Set override",
                                       on_click=_on_override_button_pressed,
                                       disabled=all_overridden)
                         rv.Alert(children=[f"This will affect {no_override_count} {no_override_classes}"],
