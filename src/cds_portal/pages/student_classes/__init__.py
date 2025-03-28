@@ -132,6 +132,16 @@ def Page():
                         "variable": "y",
                         "children": [
                             solara.Button(
+                                "Pre-survey",
+                                text=False,
+                                icon_name="mdi-folder-account-outline",
+                                depressed=True,
+                                color="info",
+                                href="",
+                                target="_blank",
+                                style={"margin": "0 5px"},
+                            ),
+                            solara.Button(
                                 "Launch",
                                 text=False,
                                 icon_name="mdi-pencil",
