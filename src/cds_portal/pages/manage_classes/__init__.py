@@ -349,7 +349,7 @@ def Page():
                         {"text": "Date", "value": "date"},
                         {"text": "Story", "value": "story"},
                         {"text": "Code", "value": "code"},
-                        {"text": "ID", "value": "id", "align": " d-none"},
+                        {"text": "ID", "value": "id", "align": "d-none"},
                         {"text": "Expected size", "value": "expected_size"},
                         {"text": "Asynchronous", "value": "asynchronous"},
                     ]

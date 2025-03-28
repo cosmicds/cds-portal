@@ -59,6 +59,14 @@ class BaseAPI:
         r = self.request_session.get(f"{self.API_URL}/educators/{self.hashed_user}")
         return r.json()["educator"] is not None
 
+    @property
+    def user_type_id(self) -> tuple[str | None, int | None]:
+        if self.educator_exists:
+            return "Educator", self.load_educator_info()["id"]
+        elif self.student_exists:
+            return "Student", self.load_student_info()["id"]
+        return None, None
+
     def validate_class_code(self, class_code: str) -> bool:
         r = self.request_session.get(
             f"{self.API_URL}/validate-classroom-code/{class_code}"

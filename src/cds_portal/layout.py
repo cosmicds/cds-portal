@@ -118,6 +118,7 @@ def Layout(children=[]):
                         ],
                     ):
                         with rv.List(dense=True, nav=True, max_width=300):
+                            user_type, user_id = BASE_API.user_type_id
                             with rv.ListItem():
                                 rv.ListItemAvatar(
                                     children=[
@@ -141,6 +142,11 @@ def Layout(children=[]):
                                                 f"{auth.user.value['userinfo'].get('cds/email', '')}"
                                             ]
                                         ),
+                                        rv.ListItemSubtitle(
+                                            children=[
+                                                f"{user_type} ID: {user_id}"
+                                            ]
+                                        )
                                     ]
                                 )
 
