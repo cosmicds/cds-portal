@@ -23,12 +23,24 @@ def Layout(children=[]):
     show_menu = solara.use_reactive(False)
 
     def _check_user_status():
-        if BASE_API.student_exists:
+        if (info := BASE_API.student_info):
             Ref(GLOBAL_STATE.fields.user.user_type).set(UserType.student)
-        elif BASE_API.educator_exists:
+            Ref(GLOBAL_STATE.fields.user.id).set(info["id"])
+        elif (info := BASE_API.educator_info):
             Ref(GLOBAL_STATE.fields.user.user_type).set(UserType.educator)
+            Ref(GLOBAL_STATE.fields.user.id).set(info["id"])
 
     solara.use_effect(_check_user_status, [])
+
+    @solara.lab.computed
+    def user_typename():
+        user = Ref(GLOBAL_STATE.fields.user)
+        if user.value.is_educator:
+            return "Educator"
+        elif user.value.is_student:
+            return "Student"
+        else:
+            return ""
 
     with rv.App(dark=True) as main:
         solara.Title("Cosmic Data Stories")
@@ -70,7 +82,7 @@ def Layout(children=[]):
                         "Sign in", href=auth.get_login_url(), text=True, outlined=True
                     )
                 else:
-                    if not (BASE_API.student_exists or BASE_API.educator_exists):
+                    if not (BASE_API.student_info or BASE_API.educator_info):
                         UserTypeSetup()
 
                     solara.lab.ThemeToggle()
@@ -118,7 +130,7 @@ def Layout(children=[]):
                         ],
                     ):
                         with rv.List(dense=True, nav=True, max_width=300):
-                            user_type, user_id = BASE_API.user_type_id
+                            user_id = Ref(GLOBAL_STATE.fields.user.id)
                             with rv.ListItem():
                                 rv.ListItemAvatar(
                                     children=[
@@ -144,7 +156,7 @@ def Layout(children=[]):
                                         ),
                                         rv.ListItemSubtitle(
                                             children=[
-                                                f"{user_type} ID: {user_id}"
+                                                f"{user_typename.value} ID: {user_id.value}"
                                             ]
                                         )
                                     ]
