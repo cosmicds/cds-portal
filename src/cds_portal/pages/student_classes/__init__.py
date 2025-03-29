@@ -111,21 +111,28 @@ def Page():
                 with rv.Toolbar(flat=True, dense=True, class_="pa-0"):
                     rv.Spacer()
                     with rv.ToolbarItems():
-                        code = selected_rows[0]["code"] if selected_rows else None
+                        class_selected = bool(selected_rows)
+                        if class_selected:
+                            class_data = selected_rows[0]
+                            code = class_data["code"]
+                            active = BASE_API.get_class_active(class_data["code"], "hubbles_law")
+                        else:
+                            code = None
+                            active = False
                         query_string = f"?class_code={code}" if code else ""
                         solara.Button(
                             "Launch",
                             text=False,
                             color="success",
-                            disabled=not bool(selected_rows),
+                            disabled=not (class_selected and active),
                             href=f"{settings.main.base_url}hubbles-law{query_string}",
                             target="_blank"
                         )
 
                 rv.DataTable(
                     items=classes.value,
-                    single_select=False,
-                    show_select=False,
+                    single_select=True,
+                    show_select=True,
                     v_model=selected_rows,
                     on_v_model=set_selected_rows,
                     item_key="code",
