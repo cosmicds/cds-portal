@@ -85,7 +85,7 @@ def Layout(children=[]):
                         UserTypeSetup()
 
                     solara.lab.ThemeToggle()
-                    rv.Btn(icon=True, children=[rv.Icon(children=["mdi-bell"])])
+                    # rv.Btn(icon=True, children=[rv.Icon(children=["mdi-bell"])])
 
                     with rv.Menu(
                         bottom=True,
