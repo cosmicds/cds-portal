@@ -1,5 +1,6 @@
 from collections import defaultdict
 from datetime import datetime
+from typing import Callable, Optional
 
 import solara
 from solara.alias import rv
@@ -173,7 +174,9 @@ def DeleteClassDialog(disabled: bool, on_delete_clicked: callable = None):
 
 
 @solara.component
-def ClassActionsDialog(disabled: bool, class_data: list[dict]):
+def ClassActionsDialog(disabled: bool,
+                       class_data: list[dict],
+                       on_active_changed: Optional[Callable] = None):
     active, set_active = solara.use_state(False)
     message, set_message = solara.use_state("")
     message_color, set_message_color = solara.use_state("")
@@ -222,6 +225,9 @@ def ClassActionsDialog(disabled: bool, class_data: list[dict]):
             def _on_active_switched(active: bool):
                 for data in class_data:
                     BASE_API.set_class_active(data["id"], "hubbles_law", active)
+
+                if on_active_changed is not None:
+                    on_active_changed(class_data, active)
 
             with rv.Container():
                 with rv.CardText():
@@ -292,6 +298,7 @@ def ClassActionsDialog(disabled: bool, class_data: list[dict]):
 def Page():
     data = solara.use_reactive([])
     selected_rows = solara.use_reactive([])
+    retrieve = solara.use_reactive(0)
 
     def _retrieve_classes():
         classes_dict = BASE_API.load_educator_classes()
@@ -306,13 +313,14 @@ def Page():
                 "expected_size": cls["expected_size"],
                 "small_class": cls["small_class"],
                 "asynchronous": cls["asynchronous"],
+                "active": BASE_API.get_class_active(cls["id"], "hubbles_law"),
             }
             for cls in classes_dict["classes"]
         ]
 
         data.set(new_classes)
 
-    solara.use_effect(_retrieve_classes, [])
+    solara.use_effect(_retrieve_classes, [retrieve.value])
 
     def _create_class_callback(class_info):
         BASE_API.create_new_class(class_info)
@@ -348,7 +356,8 @@ def Page():
                             disabled=len(selected_rows.value) != 1,
                         )
                         ClassActionsDialog(
-                            len(selected_rows.value) == 0, selected_rows.value
+                            len(selected_rows.value) == 0, selected_rows.value,
+                            on_active_changed=lambda *args: retrieve.set(retrieve.value + 1)
                         )
 
                 rv.DataTable(
@@ -369,6 +378,7 @@ def Page():
                         {"text": "Code", "value": "code"},
                         {"text": "ID", "value": "id", "align": "d-none"},
                         {"text": "Expected size", "value": "expected_size"},
+                        {"text": "Active", "value": "active"},
                         {"text": "Asynchronous", "value": "asynchronous"},
                     ]
                 )
