@@ -258,7 +258,7 @@ class BaseAPI:
     def set_class_active(self, class_id: int, story_name: str, active: bool) -> bool:
         r = self.request_session.post(
             f"{self.API_URL}/classes/active/{class_id}/{story_name}",
-            json={"active", active},
+            json={"active": active},
         )
         return r.json()["success"]
 

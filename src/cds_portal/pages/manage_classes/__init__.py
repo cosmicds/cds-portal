@@ -1,5 +1,6 @@
 from collections import defaultdict
 from datetime import datetime
+from typing import Callable, Optional
 
 import solara
 from solara.alias import rv
@@ -173,7 +174,9 @@ def DeleteClassDialog(disabled: bool, on_delete_clicked: callable = None):
 
 
 @solara.component
-def ClassActionsDialog(disabled: bool, class_data: list[dict]):
+def ClassActionsDialog(disabled: bool,
+                       class_data: list[dict],
+                       on_active_changed: Optional[Callable] = None):
     active, set_active = solara.use_state(False)
     message, set_message = solara.use_state("")
     message_color, set_message_color = solara.use_state("")
@@ -219,6 +222,27 @@ def ClassActionsDialog(disabled: bool, class_data: list[dict]):
             with rv.CardText():
                 solara.Div("From this dialog you can make any necessary changes to the selected classes")
 
+            def _on_active_switched(active: bool):
+                for data in class_data:
+                    BASE_API.set_class_active(data["id"], "hubbles_law", active)
+
+                if on_active_changed is not None:
+                    on_active_changed(class_data, active)
+
+            with rv.Container():
+                with rv.CardText():
+                    single_class = len(class_data) == 1
+                    classes_string = "class" if single_class else "classes"
+                    is_are_string = "is" if single_class else "are"
+                    solara.Text(f"Set whether or not the selected {classes_string} {is_are_string} active")
+                with solara.Row():
+                    any_active = any(BASE_API.get_class_active(data["id"], "hubbles_law") for data in class_data)
+                    solara.Switch(label="Set active", value=any_active, on_value=_on_active_switched)
+                    rv.Alert(children=[f"This will affect {len(class_data)} {classes_string}"],
+                             color="info",
+                             outlined=True,
+                             dense=True)
+
             if "Hubble's Law" in classes_by_story:
 
                 hubble_classes = classes_by_story["Hubble's Law"]
@@ -250,7 +274,7 @@ def ClassActionsDialog(disabled: bool, class_data: list[dict]):
                     with solara.Row():
                         no_override_count = len(hubble_classes) - sum(override_statuses)
                         no_override_classes = "class" if no_override_count == 1 else "classes"
-                        solara.Button(label=f"Set override",
+                        solara.Button(label="Set override",
                                       on_click=_on_override_button_pressed,
                                       disabled=all_overridden)
                         rv.Alert(children=[f"This will affect {no_override_count} {no_override_classes}"],
@@ -261,7 +285,7 @@ def ClassActionsDialog(disabled: bool, class_data: list[dict]):
                 rv.Spacer()
 
                 with rv.CardActions():
-                    solara.Button("Cancel", on_click=close_dialog, elevation=0)
+                    solara.Button("Close", on_click=close_dialog, elevation=0)
 
         rv.Snackbar(v_model=bool(message),
                     on_v_model=lambda *args: _reset_snackbar(),
@@ -274,6 +298,7 @@ def ClassActionsDialog(disabled: bool, class_data: list[dict]):
 def Page():
     data = solara.use_reactive([])
     selected_rows = solara.use_reactive([])
+    retrieve = solara.use_reactive(0)
 
     def _retrieve_classes():
         classes_dict = BASE_API.load_educator_classes()
@@ -288,13 +313,14 @@ def Page():
                 "expected_size": cls["expected_size"],
                 "small_class": cls["small_class"],
                 "asynchronous": cls["asynchronous"],
+                "active": BASE_API.get_class_active(cls["id"], "hubbles_law"),
             }
             for cls in classes_dict["classes"]
         ]
 
         data.set(new_classes)
 
-    solara.use_effect(_retrieve_classes, [])
+    solara.use_effect(_retrieve_classes, [retrieve.value])
 
     def _create_class_callback(class_info):
         BASE_API.create_new_class(class_info)
@@ -330,7 +356,8 @@ def Page():
                             disabled=len(selected_rows.value) != 1,
                         )
                         ClassActionsDialog(
-                            len(selected_rows.value) == 0, selected_rows.value
+                            len(selected_rows.value) == 0, selected_rows.value,
+                            on_active_changed=lambda *args: retrieve.set(retrieve.value + 1)
                         )
 
                 rv.DataTable(
@@ -351,6 +378,7 @@ def Page():
                         {"text": "Code", "value": "code"},
                         {"text": "ID", "value": "id", "align": "d-none"},
                         {"text": "Expected size", "value": "expected_size"},
+                        {"text": "Active", "value": "active"},
                         {"text": "Asynchronous", "value": "asynchronous"},
                     ]
                 )

@@ -78,10 +78,9 @@ def JoinClassDialog(callback: callable = lambda: None):
 @solara.component
 def Page():
     classes = solara.use_reactive([])
-    selected_rows, set_selected_rows = solara.use_state([])
+    selected_rows, set_selected_rows = solara.use_state(None)
 
     def _retrieve_classes():
-        print(BASE_API.load_student_info())
         classes_response = BASE_API.load_student_classes()
         formatted_classes = []
 
@@ -105,58 +104,64 @@ def Page():
         with rv.Col(cols=12):
             with rv.Row(class_="pa-0 mb-8 mx-0"):
                 solara.Text("Class Overview", classes=["display-1"])
-                rv.Spacer()
-                JoinClassDialog(callback=_retrieve_classes)
 
-            rv.DataTable(
-                items=classes.value,
-                single_select=False,
-                show_select=False,
-                v_model=selected_rows,
-                on_v_model=set_selected_rows,
-                headers=[
-                    {"text": "Date", "value": "date", "sortable": True},
-                    {
-                        "text": "Name",
-                        "align": "start",
-                        "sortable": True,
-                        "value": "name",
-                    },
-                    {"text": "Educator", "value": "educator"},
-                    {"text": "Code", "value": "code"},
-                    {"text": "", "value": "actions", "align": "end"},
-                ],
-                v_slots=[
-                    {
-                        "name": "item.actions",
-                        "variable": "y",
-                        "children": [
-                            solara.Button(
-                                "Pre-survey",
-                                text=False,
-                                icon_name="mdi-folder-account-outline",
-                                depressed=True,
-                                color="info",
-                                href="",
-                                target="_blank",
-                                style={"margin": "0 5px"},
-                            ),
-                            solara.Button(
-                                "Launch",
-                                text=False,
-                                icon_name="mdi-pencil",
-                                # outlined=True,
-                                depressed=True,
-                                color="success",
-                                href=f"{settings.main.base_url}hubbles-law",
-                                target="_blank",
-                            ),
-                            # rv.Btn(
-                            #     icon=True,
-                            #     # on_click=lambda: print("Delete"),
-                            #     children=[rv.Icon(children=["mdi-delete"])],
-                            # ),
-                        ],
-                    },
-                ],
-            )
+            with rv.Card(outlined=True, flat=True):
+                with rv.Toolbar(flat=True, dense=True, class_="pa-0"):
+                    with rv.ToolbarItems():
+                        JoinClassDialog(callback=_retrieve_classes)
+                        class_selected = bool(selected_rows)
+                        if class_selected:
+                            class_data = selected_rows[0]
+                            code = class_data["code"]
+                            active = BASE_API.get_class_active(class_data["code"], "hubbles_law")
+                        else:
+                            code = None
+                            active = False
+                        query_string = f"?class_code={code}" if code else ""
+                        solara.Button(
+                            "Launch",
+                            text=False,
+                            color="success",
+                            disabled=not (class_selected and active),
+                            href=f"{settings.main.base_url}hubbles-law{query_string}",
+                            target="_blank"
+                        )
+
+                rv.DataTable(
+                    items=classes.value,
+                    single_select=True,
+                    show_select=True,
+                    v_model=selected_rows,
+                    on_v_model=set_selected_rows,
+                    item_key="code",
+                    headers=[
+                        {"text": "Date", "value": "date", "sortable": True},
+                        {
+                            "text": "Name",
+                            "align": "start",
+                            "sortable": True,
+                            "value": "name",
+                        },
+                        {"text": "Educator", "value": "educator"},
+                        {"text": "Code", "value": "code"},
+                        {"text": "", "value": "actions", "align": "end"},
+                    ],
+                    v_slots=[
+                        {
+                            "name": "item.actions",
+                            "variable": "y",
+                            "children": [
+                                solara.Button(
+                                    "Pre-survey",
+                                    text=False,
+                                    icon_name="mdi-folder-account-outline",
+                                    depressed=True,
+                                    color="info",
+                                    href="",
+                                    target="_blank",
+                                    style={"margin": "0 5px"},
+                                ),
+                            ],
+                        },
+                    ],
+                )
