@@ -215,7 +215,7 @@ def Layout(children=[]):
                                 "Logout",
                                 style="width:100%",
                                 icon_name="mdi-logout",
-                                color="error",
+                                color="info",
                                 flat=True,
                                 text=False,
                                 on_click=lambda: router.push("/"),

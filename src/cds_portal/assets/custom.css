@@ -6,7 +6,50 @@
 :root {
     --jp-content-font-family: "Poppins" !important;
     --jp-ui-font-family: "Poppins" !important;
+
+    --primary-dark: #0D47A1;
+    --secondary-dark: #00838F;
+    --accent-dark: #FFC400;
+    --error-dark: #C5CAE9;
+    --info-dark: #BF360C;
+    --success-dark: #00E676;
+    --warning-dark: #DD2C00;
+    
+    --primary-light: #1565C0;
+    --secondary-light: #006064;
+    --accent-light: #FFD740;
+    --error-light: #121754;
+    --info-light: #FF7043;
+    --success-light: #388E3C;
+    --warning-light: #DD2C00;
+    
+    --cosmicds-red: #E60001;
+    --cosmicds-blue: #0F3A7E;
+
+    --cosmicds-red-lighter: #ff4e4e;
+    --cosmicds-blue-lighter: #1a63d9;
 }
+
+:root .theme--dark {
+    --primary: var(--primary-dark);
+    --secondary: var(--secondary-dark);
+    --accent: var(--accent-dark);
+    --error: var(--error-dark);
+    --info: var(var(--info-dark));
+    --success: var(--success-dark);
+    --warning: var(--warning-dark);
+}
+
+:root .theme--light {
+    --primary: var(--primary-light);
+    --secondary: var(--secondary-light);
+    --accent: var(--accent-light);
+    --error: var(--error-light);
+    --info: var(--info-light);
+    --success: var(--success-light);
+    --warning: var(--warning-light);
+}
+
 
 html,
 .v-application,
