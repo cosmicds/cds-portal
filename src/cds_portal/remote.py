@@ -50,14 +50,22 @@ class BaseAPI:
         return hashed
 
     @property
-    def student_exists(self):
+    def student_info(self):
         r = self.request_session.get(f"{self.API_URL}/students/{self.hashed_user}")
-        return r.json()["student"] is not None
+        return r.json().get("student", None)
 
     @property
-    def educator_exists(self):
+    def educator_info(self):
         r = self.request_session.get(f"{self.API_URL}/educators/{self.hashed_user}")
-        return r.json()["educator"] is not None
+        return r.json().get("educator", None)
+
+    @property
+    def user_type_id(self) -> tuple[str | None, int | None]:
+        if self.educator_info:
+            return "Educator", self.load_educator_info()["id"]
+        elif self.student_info:
+            return "Student", self.load_student_info()["id"]
+        return None, None
 
     def validate_class_code(self, class_code: str) -> bool:
         r = self.request_session.get(
@@ -240,6 +248,19 @@ class BaseAPI:
         )
 
         return r
+
+    def get_class_active(self, class_id: int, story_name: str) -> bool:
+        r = self.request_session.get(
+            f"{self.API_URL}/classes/active/{class_id}/{story_name}",
+        )
+        return r.json()["active"]
+
+    def set_class_active(self, class_id: int, story_name: str, active: bool) -> bool:
+        r = self.request_session.post(
+            f"{self.API_URL}/classes/active/{class_id}/{story_name}",
+            json={"active", active},
+        )
+        return r.json()["success"]
 
 
     @staticmethod
