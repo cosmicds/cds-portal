@@ -7,7 +7,6 @@ from solara_enterprise import auth
 import httpx
 from solara.lab import Ref
 
-from .components.clipboard import CopyToClipboard
 from .state import GLOBAL_STATE, UserType
 from .remote import BASE_API
 from .components.hero import Hero
@@ -131,6 +130,23 @@ def Layout(children=[]):
                     ):
                         with rv.List(dense=True, nav=True, max_width=300):
                             user_id = Ref(GLOBAL_STATE.fields.user.id)
+                            user_menu_list = []
+
+                            if user_typename.value == "Educator":
+                                user_menu_list.append(
+                                    rv.ListItemSubtitle(
+                                        children=[
+                                            f"{auth.user.value['userinfo'].get('cds/email', '')}"
+                                        ]
+                                    )
+                                ) 
+                            user_menu_list.append(
+                                rv.ListItemSubtitle(
+                                    children=[
+                                        f"{user_typename.value} ID: {user_id.value}"
+                                    ]
+                                )
+                            )      
                             with rv.ListItem():
                                 rv.ListItemAvatar(
                                     children=[
@@ -140,26 +156,7 @@ def Layout(children=[]):
                                     ]
                                 ),
                                 rv.ListItemContent(
-                                    children=[
-                                        rv.ListItemTitle(
-                                            children=[
-                                                f"{auth.user.value['userinfo'].get('cds/name', 'cds/email')}",
-                                                CopyToClipboard(
-                                                    student_username=BASE_API.hashed_user
-                                                ),
-                                            ]
-                                        ),
-                                        rv.ListItemSubtitle(
-                                            children=[
-                                                f"{auth.user.value['userinfo'].get('cds/email', '')}"
-                                            ]
-                                        ),
-                                        rv.ListItemSubtitle(
-                                            children=[
-                                                f"{user_typename.value} ID: {user_id.value}"
-                                            ]
-                                        )
-                                    ]
+                                    children=user_menu_list,
                                 )
 
                             rv.Divider(class_="pb-1")
