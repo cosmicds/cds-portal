@@ -279,7 +279,7 @@ def ClassActionsDialog(disabled: bool, class_data: list[dict]):
                 rv.Spacer()
 
                 with rv.CardActions():
-                    solara.Button("Cancel", on_click=close_dialog, elevation=0)
+                    solara.Button("Close", on_click=close_dialog, elevation=0)
 
         rv.Snackbar(v_model=bool(message),
                     on_v_model=lambda *args: _reset_snackbar(),

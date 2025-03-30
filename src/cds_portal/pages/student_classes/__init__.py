@@ -104,13 +104,11 @@ def Page():
         with rv.Col(cols=12):
             with rv.Row(class_="pa-0 mb-8 mx-0"):
                 solara.Text("Class Overview", classes=["display-1"])
-                rv.Spacer()
-                JoinClassDialog(callback=_retrieve_classes)
 
             with rv.Card(outlined=True, flat=True):
                 with rv.Toolbar(flat=True, dense=True, class_="pa-0"):
-                    rv.Spacer()
                     with rv.ToolbarItems():
+                        JoinClassDialog(callback=_retrieve_classes)
                         class_selected = bool(selected_rows)
                         if class_selected:
                             class_data = selected_rows[0]
