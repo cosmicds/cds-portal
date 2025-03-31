@@ -45,6 +45,8 @@ def JoinClassDialog(callback: callable = lambda: None):
                     v_bind="x.attrs",
                     children=["Join Class"],
                     elevation=0,
+                    class_="ma-2 black--text",
+                    color="accent",
                 ),
             }
         ],
@@ -102,30 +104,31 @@ def Page():
 
     with solara.Row(classes=["fill-height"]):
         with rv.Col(cols=12):
-            with rv.Row(class_="pa-0 mb-8 mx-0"):
-                solara.Text("Class Overview", classes=["display-1"])
+            with rv.Row(class_="pa-0 mb-0 mx-0"):
+                    solara.Text("Class Overview", classes=["display-1"])
+            with rv.Row(class_="class_buttons mb-2"):
+                JoinClassDialog(callback=_retrieve_classes)
+
+                class_selected = bool(selected_rows)
+                if class_selected:
+                    class_data = selected_rows[0]
+                    code = class_data["code"]
+                    active = BASE_API.get_class_active(class_data["code"], "hubbles_law")
+                else:
+                    code = None
+                    active = False
+                query_string = f"?class_code={code}" if code else ""
+                solara.Button(
+                    "Launch",
+                    text=False,
+                    color="success",
+                    disabled=not (class_selected and active),
+                    href=f"{settings.main.base_url}hubbles-law{query_string}",
+                    target="_blank",
+                    class_="ma-2 black--text",
+                )                    
 
             with rv.Card(outlined=True, flat=True):
-                with rv.Toolbar(flat=True, dense=True, class_="pa-0"):
-                    with rv.ToolbarItems():
-                        JoinClassDialog(callback=_retrieve_classes)
-                        class_selected = bool(selected_rows)
-                        if class_selected:
-                            class_data = selected_rows[0]
-                            code = class_data["code"]
-                            active = BASE_API.get_class_active(class_data["code"], "hubbles_law")
-                        else:
-                            code = None
-                            active = False
-                        query_string = f"?class_code={code}" if code else ""
-                        solara.Button(
-                            "Launch",
-                            text=False,
-                            color="success",
-                            disabled=not (class_selected and active),
-                            href=f"{settings.main.base_url}hubbles-law{query_string}",
-                            target="_blank"
-                        )
 
                 rv.DataTable(
                     items=classes.value,
@@ -137,7 +140,7 @@ def Page():
                     headers=[
                         {"text": "Date", "value": "date", "sortable": True},
                         {
-                            "text": "Name",
+                            "text": "Class Name",
                             "align": "start",
                             "sortable": True,
                             "value": "name",
@@ -154,12 +157,13 @@ def Page():
                                 solara.Button(
                                     "Pre-survey",
                                     text=False,
-                                    icon_name="mdi-folder-account-outline",
+                                    icon_name="mdi-checkbox-multiple-marked",
                                     depressed=True,
-                                    color="info",
-                                    href="",
+                                    color="accent",
+                                    href="https://harvard.az1.qualtrics.com/jfe/form/SV_3dYpcAoM9Ta1nFQ",
                                     target="_blank",
                                     style={"margin": "0 5px"},
+                                    class_="black--text",
                                 ),
                             ],
                         },

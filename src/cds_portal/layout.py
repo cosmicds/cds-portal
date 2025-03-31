@@ -7,7 +7,6 @@ from solara_enterprise import auth
 import httpx
 from solara.lab import Ref
 
-from .components.clipboard import CopyToClipboard
 from .state import GLOBAL_STATE, UserType
 from .remote import BASE_API
 from .components.hero import Hero
@@ -51,7 +50,7 @@ def Layout(children=[]):
                 with solara.Link(solara.resolve_path("/")):
                     with rv.Avatar(class_="mr-8", width="60", tile=True):
                         rv.Img(
-                            src=str(IMG_PATH / "logo.webp"),
+                            src=str(IMG_PATH / "cosmicds_logo_transparent_for_dark_backgrounds.webp"),
                         )
 
                 solara.Button(
@@ -86,7 +85,7 @@ def Layout(children=[]):
                         UserTypeSetup()
 
                     solara.lab.ThemeToggle()
-                    rv.Btn(icon=True, children=[rv.Icon(children=["mdi-bell"])])
+                    # rv.Btn(icon=True, children=[rv.Icon(children=["mdi-bell"])])
 
                     with rv.Menu(
                         bottom=True,
@@ -131,6 +130,23 @@ def Layout(children=[]):
                     ):
                         with rv.List(dense=True, nav=True, max_width=300):
                             user_id = Ref(GLOBAL_STATE.fields.user.id)
+                            user_menu_list = []
+
+                            if user_typename.value == "Educator":
+                                user_menu_list.append(
+                                    rv.ListItemSubtitle(
+                                        children=[
+                                            f"{auth.user.value['userinfo'].get('cds/email', '')}"
+                                        ]
+                                    )
+                                ) 
+                            user_menu_list.append(
+                                rv.ListItemSubtitle(
+                                    children=[
+                                        f"{user_typename.value} ID: {user_id.value}"
+                                    ]
+                                )
+                            )      
                             with rv.ListItem():
                                 rv.ListItemAvatar(
                                     children=[
@@ -140,26 +156,7 @@ def Layout(children=[]):
                                     ]
                                 ),
                                 rv.ListItemContent(
-                                    children=[
-                                        rv.ListItemTitle(
-                                            children=[
-                                                f"{auth.user.value['userinfo'].get('cds/name', 'cds/email')}",
-                                                CopyToClipboard(
-                                                    student_username=BASE_API.hashed_user
-                                                ),
-                                            ]
-                                        ),
-                                        rv.ListItemSubtitle(
-                                            children=[
-                                                f"{auth.user.value['userinfo'].get('cds/email', '')}"
-                                            ]
-                                        ),
-                                        rv.ListItemSubtitle(
-                                            children=[
-                                                f"{user_typename.value} ID: {user_id.value}"
-                                            ]
-                                        )
-                                    ]
+                                    children=user_menu_list,
                                 )
 
                             rv.Divider(class_="pb-1")
@@ -206,11 +203,11 @@ def Layout(children=[]):
                                     lambda *args: router.push("/manage_students"),
                                 )
 
-                            with rv.ListItem(link=True):
-                                with rv.ListItemIcon():
-                                    rv.Icon(children=["mdi-settings"])
+                            # with rv.ListItem(link=True):
+                            #     with rv.ListItemIcon():
+                            #         rv.Icon(children=["mdi-settings"])
 
-                                rv.ListItemTitle(children=["Settings"])
+                            #     rv.ListItemTitle(children=["Settings"])
 
                             rv.Divider(class_="pb-1")
 
@@ -218,12 +215,14 @@ def Layout(children=[]):
                                 "Logout",
                                 style="width:100%",
                                 icon_name="mdi-logout",
-                                color="error",
+                                color="info",
                                 flat=True,
                                 text=False,
                                 on_click=lambda: router.push("/"),
                                 href=auth.get_logout_url("/"),
                             )
+                    if user_typename.value == "Student":
+                        solara.Text (f"{user_typename.value} ID: {user_id.value}", classes=["ml-4"])
 
         with rv.Content():
             if route_current.path == "/":
@@ -257,7 +256,7 @@ def Layout(children=[]):
 
                     with rv.Col(cols=4):
                         rv.Img(
-                            src=str(IMG_PATH / "NASA_logo_svg.webp"),
+                            src=str(IMG_PATH / "NASA_Partner_color_300_no_outline.webp"),
                             contain=True,
                             height="100",
                         )

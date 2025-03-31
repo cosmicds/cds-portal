@@ -36,9 +36,10 @@ def CreateClassDialog(on_create_clicked: callable = None):
                 "children": rv.Btn(
                     v_on="x.on",
                     v_bind="x.attrs",
-                    text=True,
-                    children=["New"],
+                    children=["Add Class"],
                     elevation=0,
+                    color="success",
+                    class_="ma-2 black--text",
                 ),
             }
         ],
@@ -111,10 +112,11 @@ def CreateClassDialog(on_create_clicked: callable = None):
                 solara.Button("Cancel", on_click=lambda: set_active(False), elevation=0)
                 solara.Button(
                     "Create",
-                    color="info",
+                    color="accent",
                     on_click=_add_button_clicked,
                     elevation=0,
                     disabled=create_button_disabled.value,
+                    class_="ma-2 black--text",
                 )
 
     return dialog
@@ -136,11 +138,11 @@ def DeleteClassDialog(disabled: bool, on_delete_clicked: callable = None):
                     v_bind="x.attrs",
                     color="error",
                     disabled=disabled,
-                    text=True,
                     children=[
                         "Delete",
                     ],
                     elevation=0,
+                    class_="ma-2",
                 ),
             }
         ],
@@ -168,6 +170,7 @@ def DeleteClassDialog(disabled: bool, on_delete_clicked: callable = None):
                     color="error",
                     on_click=_delete_button_clicked,
                     elevation=0,
+                    class_="ma-2",
                 )
 
     return dialog
@@ -192,9 +195,10 @@ def ClassActionsDialog(disabled: bool,
                     v_on="x.on",
                     v_bind="x.attrs",
                     disabled=disabled,
-                    text=True,
                     children=["Modify class"],
                     elevation=0,
+                    color="accent",
+                    class_="ma-2 black--text",
                 )
             }
         ],
@@ -239,7 +243,7 @@ def ClassActionsDialog(disabled: bool,
                     any_active = any(BASE_API.get_class_active(data["id"], "hubbles_law") for data in class_data)
                     solara.Switch(label="Set active", value=any_active, on_value=_on_active_switched)
                     rv.Alert(children=[f"This will affect {len(class_data)} {classes_string}"],
-                             color="info",
+                             color="accent",
                              outlined=True,
                              dense=True)
 
@@ -278,14 +282,14 @@ def ClassActionsDialog(disabled: bool,
                                       on_click=_on_override_button_pressed,
                                       disabled=all_overridden)
                         rv.Alert(children=[f"This will affect {no_override_count} {no_override_classes}"],
-                                 color="info",
+                                 color="accent",
                                  outlined=True,
                                  dense=True)
 
                 rv.Spacer()
 
                 with rv.CardActions():
-                    solara.Button("Close", on_click=close_dialog, elevation=0)
+                    solara.Button("Close", on_click=close_dialog, elevation=0, color="info")
 
         rv.Snackbar(v_model=bool(message),
                     on_v_model=lambda *args: _reset_snackbar(),
@@ -333,32 +337,35 @@ def Page():
 
     with solara.Row(classes=["fill-height"]):
         with rv.Col(cols=12):
-            solara.Div("Manage Classes", classes=["display-1", "mb-8"])
+            with rv.Row(class_="pa-0 mb-0 mx-0"):
+                solara.Text("Manage Classes", classes=["display-1"])
+
+            with rv.Row(class_="class_buttons mb-2"):
+                CreateClassDialog(_create_class_callback)
+
+                # DeleteClassDialog(
+                #             len(selected_rows.value) == 0, _delete_class_callback
+                #         )
+
+                solara.Button(
+                    "Dashboard",
+                    color="accent",
+                    href=(
+                        f"/educator-dashboard?id={selected_rows.value[0]['id']}"
+                        if len(selected_rows.value) == 1
+                        else "/educator-dashboard"
+                    ),
+                    elevation=0,
+                    disabled=len(selected_rows.value) != 1,
+                    class_="ma-2 black--text",
+                    )
+
+                ClassActionsDialog(
+                    len(selected_rows.value) == 0, selected_rows.value,
+                    on_active_changed=lambda *args: retrieve.set(retrieve.value + 1)
+                )
 
             with rv.Card(outlined=True, flat=True):
-                with rv.Toolbar(flat=True, dense=True, class_="pa-0"):
-                    with rv.ToolbarItems():
-                        CreateClassDialog(_create_class_callback)
-                        rv.Divider(vertical=True)
-                        DeleteClassDialog(
-                            len(selected_rows.value) == 0, _delete_class_callback
-                        )
-                        rv.Divider(vertical=True)
-                        solara.Button(
-                            "Dashboard",
-                            color="info",
-                            href=(
-                                f"/educator-dashboard?id={selected_rows.value[0]['id']}"
-                                if len(selected_rows.value) == 1
-                                else "/educator-dashboard"
-                            ),
-                            elevation=0,
-                            disabled=len(selected_rows.value) != 1,
-                        )
-                        ClassActionsDialog(
-                            len(selected_rows.value) == 0, selected_rows.value,
-                            on_active_changed=lambda *args: retrieve.set(retrieve.value + 1)
-                        )
 
                 rv.DataTable(
                     items=data.value,
@@ -377,8 +384,8 @@ def Page():
                         {"text": "Story", "value": "story"},
                         {"text": "Code", "value": "code"},
                         {"text": "ID", "value": "id", "align": "d-none"},
-                        {"text": "Expected size", "value": "expected_size"},
+                        # {"text": "Expected size", "value": "expected_size"},
                         {"text": "Active", "value": "active"},
-                        {"text": "Asynchronous", "value": "asynchronous"},
+                        # {"text": "Asynchronous", "value": "asynchronous"},
                     ]
                 )
