@@ -68,3 +68,7 @@ html,
 .v-application--wrap > div:nth-child(2) > div:nth-child(2){
     display: none !important;
 }
+
+.class_buttons {
+    justify-content: flex-end !important;
+}
