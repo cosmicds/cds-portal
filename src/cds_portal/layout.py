@@ -50,7 +50,7 @@ def Layout(children=[]):
                 with solara.Link(solara.resolve_path("/")):
                     with rv.Avatar(class_="mr-8", width="60", tile=True):
                         rv.Img(
-                            src=str(IMG_PATH / "cosmicds_logo_transparent_for_dark_backgrounds.png"),
+                            src=str(IMG_PATH / "cosmicds_logo_transparent_for_dark_backgrounds.webp"),
                         )
 
                 solara.Button(
@@ -254,7 +254,7 @@ def Layout(children=[]):
 
                     with rv.Col(cols=4):
                         rv.Img(
-                            src=str(IMG_PATH / "NASA_Partner_color_300_no_outline.png"),
+                            src=str(IMG_PATH / "NASA_Partner_color_300_no_outline.webp"),
                             contain=True,
                             height="100",
                         )
