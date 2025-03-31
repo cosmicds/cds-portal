@@ -18,10 +18,7 @@ from solara.lab import theme, ThemeToggle
 
 
 @solara.component
-def EducatorDashboard():
-    router = solara.use_router()
-    url_params = {x.split("=")[0]: x.split("=")[1] for x in router.search.split("&")}
-
+def EducatorDashboard(url_params):
     query = QueryCosmicDSApi()
     show_dashboard, set_show_dashboard = solara.use_state(False)
     class_id_list = solara.use_reactive([int(url_params["id"])])
