@@ -125,7 +125,7 @@ def Page():
                     disabled=not (class_selected and active),
                     href=f"{settings.main.base_url}hubbles-law{query_string}",
                     target="_blank",
-                    class_="ma-2",
+                    class_="ma-2 black--text",
                 )                    
 
             with rv.Card(outlined=True, flat=True):
