@@ -203,11 +203,11 @@ def Layout(children=[]):
                                     lambda *args: router.push("/manage_students"),
                                 )
 
-                            with rv.ListItem(link=True):
-                                with rv.ListItemIcon():
-                                    rv.Icon(children=["mdi-settings"])
+                            # with rv.ListItem(link=True):
+                            #     with rv.ListItemIcon():
+                            #         rv.Icon(children=["mdi-settings"])
 
-                                rv.ListItemTitle(children=["Settings"])
+                            #     rv.ListItemTitle(children=["Settings"])
 
                             rv.Divider(class_="pb-1")
 
