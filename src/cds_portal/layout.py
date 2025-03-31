@@ -221,6 +221,8 @@ def Layout(children=[]):
                                 on_click=lambda: router.push("/"),
                                 href=auth.get_logout_url("/"),
                             )
+                    if user_typename.value == "Student":
+                        solara.Text (f"{user_typename.value} ID: {user_id.value}", classes=["ml-4"])
 
         with rv.Content():
             if route_current.path == "/":
