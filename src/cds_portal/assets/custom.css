@@ -72,3 +72,20 @@ html,
 .class_buttons {
     justify-content: flex-end !important;
 }
+
+/* Educator Dashboard CSS */
+
+
+.cds-dashboard {
+    /* this is just a wrapper to "scope" the css styles */
+}
+
+.mc-question-summary-table .v-data-table__selected {
+    background: var(--md-amber-100) !important;
+    color: black;
+}
+
+.mc-individual-student-table .v-data-table__selected {
+    background: var(--md-amber-100) !important;
+    color: black;
+}
