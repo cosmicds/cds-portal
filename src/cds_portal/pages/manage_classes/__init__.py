@@ -4,6 +4,8 @@ from typing import Callable, Optional
 
 import solara
 from solara.alias import rv
+from solara.server import settings
+
 
 from cds_portal.components.input import IntegerInput
 
@@ -359,6 +361,16 @@ def Page():
                     disabled=len(selected_rows.value) != 1,
                     class_="ma-2 black--text",
                     )
+                
+                solara.Button(
+                    "Launch Demo",
+                    text=False,
+                    color="success",
+                    disabled=False,
+                    href=f"{settings.main.base_url}hubbles-law",
+                    target="_blank",
+                    class_="ma-2 black--text",
+                )      
 
                 ClassActionsDialog(
                     len(selected_rows.value) == 0, selected_rows.value,
