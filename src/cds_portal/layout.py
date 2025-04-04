@@ -11,6 +11,7 @@ from .state import GLOBAL_STATE, UserType
 from .remote import BASE_API
 from .components.hero import Hero
 from .components.setup_dialog import UserTypeSetup
+from cosmicds.components.theme_toggle import ThemeToggle
 
 IMG_PATH = Path("static") / "public" / "images"
 
@@ -84,7 +85,13 @@ def Layout(children=[]):
                     if not (BASE_API.student_info or BASE_API.educator_info):
                         UserTypeSetup()
 
-                    solara.lab.ThemeToggle()
+                    ThemeToggle(
+                        on_icon="mdi-brightness-4",  # dark mode icon
+                        off_icon="mdi-brightness-4",  # light mode icon
+                        enable_auto=False,
+                        default_theme="dark",
+                        enforce_default=True,
+                    )
                     # rv.Btn(icon=True, children=[rv.Icon(children=["mdi-bell"])])
 
                     with rv.Menu(
