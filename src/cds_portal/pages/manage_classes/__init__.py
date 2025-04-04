@@ -325,11 +325,11 @@ def ChangeClassActivation(disabled: bool,
     any_active = any(BASE_API.get_class_active(data["id"], "hubbles_law") for data in class_data)
     label = ""
     if disabled:
-        label = "(De)Activate Classes"
+        label = "(De)Activate "+ classes_string
     elif any_active:
-        label = "Deactivate Classes"
+        label = "Deactivate "+ classes_string
     else:
-        label = "Activate Classes"
+        label = "Activate "+ classes_string
         
     # solara.Switch(label="Set active", value=any_active, on_value=_on_active_switched)
     ToggleButton(
