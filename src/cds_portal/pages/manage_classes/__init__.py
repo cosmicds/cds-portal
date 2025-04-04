@@ -8,6 +8,7 @@ from solara.server import settings
 
 
 from cds_portal.components.input import IntegerInput
+from cds_portal.components.toggle_botton import ToggleButton
 
 from ...remote import BASE_API
 
@@ -300,6 +301,48 @@ def ClassActionsDialog(disabled: bool,
                     children=[message])
 
 
+
+def ChangeClassActivation(disabled: bool,
+                       class_data: list[dict],
+                       on_active_changed: Optional[Callable] = None):
+
+
+    classes_by_story = defaultdict(list)
+    for data in class_data:
+        classes_by_story[data["story"]].append(data)
+
+    def _on_active_switched(active: bool):
+        for data in class_data:
+            BASE_API.set_class_active(data["id"], "hubbles_law", active)
+
+        if on_active_changed is not None:
+            on_active_changed(class_data, active)
+    
+    single_class = len(class_data) == 1
+    classes_string = "class" if single_class else "classes"
+    is_are_string = "is" if single_class else "are"
+    # solara.Text(f"Set whether or not the selected {classes_string} {is_are_string} active")
+    any_active = any(BASE_API.get_class_active(data["id"], "hubbles_law") for data in class_data)
+    label = ""
+    if disabled:
+        label = "(De)Activate Classes"
+    elif any_active:
+        label = "Deactivate Classes"
+    else:
+        label = "Activate Classes"
+        
+    # solara.Switch(label="Set active", value=any_active, on_value=_on_active_switched)
+    ToggleButton(
+        label=label,
+        value=any_active,
+        on_value=_on_active_switched,
+        color="accent",
+        disabled=disabled,
+        class_="ma-2 black--text",
+    )
+
+
+
 @solara.component
 def Page():
     data = solara.use_reactive([])
@@ -373,8 +416,14 @@ def Page():
                     class_="ma-2 black--text",
                     )    
 
-                ClassActionsDialog(
-                    len(selected_rows.value) == 0, selected_rows.value,
+                # ClassActionsDialog(
+                #     disabled = len(selected_rows.value) == 0, 
+                #     class_data = selected_rows.value,
+                #     on_active_changed=lambda *args: retrieve.set(retrieve.value + 1)
+                # )
+                ChangeClassActivation(
+                    disabled = len(selected_rows.value) == 0, 
+                    class_data = selected_rows.value,
                     on_active_changed=lambda *args: retrieve.set(retrieve.value + 1)
                 )
 
