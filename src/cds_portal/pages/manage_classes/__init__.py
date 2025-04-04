@@ -343,6 +343,17 @@ def Page():
                 solara.Text("Manage Classes", classes=["display-1"])
 
             with rv.Row(class_="class_buttons mb-2"):
+
+                solara.Button(
+                    "Launch Hubble DS",
+                    text=False,
+                    color="success",
+                    disabled=False,
+                    href=f"{settings.main.base_url}hubbles-law",
+                    target="_blank",
+                    class_="ma-2 black--text",
+                )  
+
                 CreateClassDialog(_create_class_callback)
 
                 # DeleteClassDialog(
@@ -360,17 +371,7 @@ def Page():
                     elevation=0,
                     disabled=len(selected_rows.value) != 1,
                     class_="ma-2 black--text",
-                    )
-                
-                solara.Button(
-                    "Launch Demo",
-                    text=False,
-                    color="success",
-                    disabled=False,
-                    href=f"{settings.main.base_url}hubbles-law",
-                    target="_blank",
-                    class_="ma-2 black--text",
-                )      
+                    )    
 
                 ClassActionsDialog(
                     len(selected_rows.value) == 0, selected_rows.value,
