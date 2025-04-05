@@ -11,6 +11,7 @@ from .state import GLOBAL_STATE, UserType
 from .remote import BASE_API
 from .components.hero import Hero
 from .components.setup_dialog import UserTypeSetup
+from cosmicds.components.theme_toggle import ThemeToggle
 
 IMG_PATH = Path("static") / "public" / "images"
 
@@ -22,11 +23,11 @@ def Layout(children=[]):
     show_menu = solara.use_reactive(False)
 
     def _check_user_status():
-        if (info := BASE_API.student_info):
-            Ref(GLOBAL_STATE.fields.user.user_type).set(UserType.student)
-            Ref(GLOBAL_STATE.fields.user.id).set(info["id"])
-        elif (info := BASE_API.educator_info):
+        if (info := BASE_API.educator_info):
             Ref(GLOBAL_STATE.fields.user.user_type).set(UserType.educator)
+            Ref(GLOBAL_STATE.fields.user.id).set(info["id"])
+        elif (info := BASE_API.student_info):
+            Ref(GLOBAL_STATE.fields.user.user_type).set(UserType.student)
             Ref(GLOBAL_STATE.fields.user.id).set(info["id"])
 
     solara.use_effect(_check_user_status, [])
@@ -84,7 +85,13 @@ def Layout(children=[]):
                     if not (BASE_API.student_info or BASE_API.educator_info):
                         UserTypeSetup()
 
-                    solara.lab.ThemeToggle()
+                    ThemeToggle(
+                        on_icon="mdi-brightness-4",  # dark mode icon
+                        off_icon="mdi-brightness-4",  # light mode icon
+                        enable_auto=False,
+                        default_theme="dark",
+                        enforce_default=True,
+                    )
                     # rv.Btn(icon=True, children=[rv.Icon(children=["mdi-bell"])])
 
                     with rv.Menu(
@@ -238,9 +245,9 @@ def Layout(children=[]):
         with rv.Footer(
             app=False,
             padless=True,
-            # style_="background: none !important;",
+            style_="background-color: #272727 !important; color: white !important;",
         ):
-            with rv.Container(style="background: none; max-width: 1200px"):
+            with rv.Container(style="max-width: 1200px"):
 
                 with rv.Row():
                     with rv.Col(cols=4):
@@ -280,7 +287,7 @@ def Layout(children=[]):
                             classes=["caption mb-4"],
                         )
                         solara.Text(
-                            "Copyright © 2024 The President and Fellows of Harvard College",
+                            "Copyright © 2025 The President and Fellows of Harvard College",
                         )
 
     return main
