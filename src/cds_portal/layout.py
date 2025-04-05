@@ -245,9 +245,9 @@ def Layout(children=[]):
         with rv.Footer(
             app=False,
             padless=True,
-            # style_="background: none !important;",
+            style_="background-color: #272727 !important; color: white !important;",
         ):
-            with rv.Container(style="background: none; max-width: 1200px"):
+            with rv.Container(style="max-width: 1200px"):
 
                 with rv.Row():
                     with rv.Col(cols=4):
@@ -287,7 +287,7 @@ def Layout(children=[]):
                             classes=["caption mb-4"],
                         )
                         solara.Text(
-                            "Copyright © 2024 The President and Fellows of Harvard College",
+                            "Copyright © 2025 The President and Fellows of Harvard College",
                         )
 
     return main
