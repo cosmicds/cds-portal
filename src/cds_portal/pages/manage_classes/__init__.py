@@ -394,21 +394,17 @@ def Page():
 
             with rv.Row(class_="class_buttons mb-2"):
 
-                solara.Button(
-                    "Launch Hubble DS",
-                    text=False,
-                    color="success",
-                    disabled=False,
-                    href=f"{settings.main.base_url}hubbles-law",
-                    target="_blank",
-                    class_="ma-2 black--text",
-                )  
-
-                CreateClassDialog(_create_class_callback)
-
-                # DeleteClassDialog(
-                #             len(selected_rows.value) == 0, _delete_class_callback
-                #         )
+                # ClassActionsDialog(
+                #     disabled = len(selected_rows.value) == 0, 
+                #     class_data = selected_rows.value,
+                #     on_active_changed=lambda *args: retrieve.set(retrieve.value + 1)
+                # )
+                ChangeClassActivation(
+                    disabled = len(selected_rows.value) == 0 or mixed_active, 
+                    class_data = selected_rows.value,
+                    on_active_changed=lambda *args: retrieve.set(retrieve.value + 1),
+                    on_mixed_active_changed=set_mixed_active,
+                )      
 
                 solara.Button(
                     "Dashboard",
@@ -421,19 +417,23 @@ def Page():
                     elevation=0,
                     disabled=len(selected_rows.value) != 1,
                     class_="ma-2 black--text",
-                    )    
+                )    
 
-                # ClassActionsDialog(
-                #     disabled = len(selected_rows.value) == 0, 
-                #     class_data = selected_rows.value,
-                #     on_active_changed=lambda *args: retrieve.set(retrieve.value + 1)
-                # )
-                ChangeClassActivation(
-                    disabled = len(selected_rows.value) == 0 or mixed_active, 
-                    class_data = selected_rows.value,
-                    on_active_changed=lambda *args: retrieve.set(retrieve.value + 1),
-                    on_mixed_active_changed=set_mixed_active,
-                )
+                # DeleteClassDialog(
+                #             len(selected_rows.value) == 0, _delete_class_callback
+                #   
+
+                CreateClassDialog(_create_class_callback)
+
+                solara.Button(
+                    "Launch Hubble DS",
+                    text=False,
+                    color="success",
+                    disabled=False,
+                    href=f"{settings.main.base_url}hubbles-law",
+                    target="_blank",
+                    class_="ma-2 black--text",
+                )  
 
             with rv.Card(outlined=True, flat=True):
 
