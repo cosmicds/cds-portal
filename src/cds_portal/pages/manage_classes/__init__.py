@@ -304,12 +304,20 @@ def ClassActionsDialog(disabled: bool,
 
 def ChangeClassActivation(disabled: bool,
                        class_data: list[dict],
-                       on_active_changed: Optional[Callable] = None):
-
+                       on_active_changed: Optional[Callable] = None,
+                       on_mixed_active_changed: Optional[Callable] = None):
 
     classes_by_story = defaultdict(list)
     for data in class_data:
         classes_by_story[data["story"]].append(data)
+
+    _active = [BASE_API.get_class_active(data["id"], "hubbles_law") for data in class_data]
+    any_active = any(_active)
+    all_active = all(_active)
+    mixed_active = not (all_active or not any_active) 
+
+    if on_mixed_active_changed is not None:
+        on_mixed_active_changed(mixed_active)
 
     def _on_active_switched(active: bool):
         for data in class_data:
@@ -321,10 +329,8 @@ def ChangeClassActivation(disabled: bool,
     single_class = len(class_data) == 1
     classes_string = "class" if single_class else "classes"
     is_are_string = "is" if single_class else "are"
-    # solara.Text(f"Set whether or not the selected {classes_string} {is_are_string} active")
-    any_active = any(BASE_API.get_class_active(data["id"], "hubbles_law") for data in class_data)
     label = ""
-    if disabled:
+    if disabled or mixed_active:
         label = "(De)Activate "+ classes_string
     elif any_active:
         label = "Deactivate "+ classes_string
@@ -348,6 +354,7 @@ def Page():
     data = solara.use_reactive([])
     selected_rows = solara.use_reactive([])
     retrieve = solara.use_reactive(0)
+    mixed_active, set_mixed_active = solara.use_state(False)
 
     def _retrieve_classes():
         classes_dict = BASE_API.load_educator_classes()
@@ -422,9 +429,10 @@ def Page():
                 #     on_active_changed=lambda *args: retrieve.set(retrieve.value + 1)
                 # )
                 ChangeClassActivation(
-                    disabled = len(selected_rows.value) == 0, 
+                    disabled = len(selected_rows.value) == 0 or mixed_active, 
                     class_data = selected_rows.value,
-                    on_active_changed=lambda *args: retrieve.set(retrieve.value + 1)
+                    on_active_changed=lambda *args: retrieve.set(retrieve.value + 1),
+                    on_mixed_active_changed=set_mixed_active,
                 )
 
             with rv.Card(outlined=True, flat=True):
