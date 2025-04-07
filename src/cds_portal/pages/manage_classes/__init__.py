@@ -484,5 +484,6 @@ def Page():
                         # {"text": "Expected size", "value": "expected_size"},
                         {"text": "Class Active", "value": "active"},
                         # {"text": "Asynchronous", "value": "asynchronous"},
-                    ]
+                    ],
+                    hide_default_footer=True,
                 )
