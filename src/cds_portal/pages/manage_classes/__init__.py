@@ -419,7 +419,7 @@ def Page():
                 #     on_active_changed=lambda *args: retrieve.set(retrieve.value + 1)
                 # )
                 solara.Button(
-                    "Launch Educator Preview",
+                    "Educator Preview",
                     text=False,
                     color="success",
                     disabled=False,
@@ -442,18 +442,19 @@ def Page():
                 
                 rv.Spacer()
                 
-                solara.Button(
-                    "Dashboard",
-                    color="success",
-                    href=(
-                        f"/educator-dashboard?id={selected_rows.value[0]['id']}"
-                        if len(selected_rows.value) == 1
-                        else "/educator-dashboard"
-                    ),
-                    elevation=0,
-                    disabled=len(selected_rows.value) != 1,
-                    class_="ma-2 black--text",
-                )    
+                if len(data.value) > 0:
+                    solara.Button(
+                        "Dashboard",
+                        color="success",
+                        href=(
+                            f"/educator-dashboard?id={selected_rows.value[0]['id']}"
+                            if len(selected_rows.value) == 1
+                            else "/educator-dashboard"
+                        ),
+                        elevation=0,
+                        disabled=len(selected_rows.value) != 1,
+                        class_="ma-2 black--text",
+                    )    
 
                 # DeleteClassDialog(
                 #             len(selected_rows.value) == 0, _delete_class_callback
