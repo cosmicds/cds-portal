@@ -336,6 +336,36 @@ def ChangeClassActivation(disabled: bool,
         label = "Deactivate "+ classes_string
     else:
         label = "Activate "+ classes_string
+    
+    # if mixed active use two checkboxes to activate/deactivate
+    if mixed_active:
+        # with solara.Card(margin=0, classes=["pa-0 ma-0"]):
+        #     solara.Checkbox(label="Activate "+ classes_string, value=False, on_value=lambda _: _on_active_switched(True))
+        #     solara.Checkbox(label="Deactivate "+ classes_string, value=False, on_value=lambda _: _on_active_switched(False))
+        val = "Activate" if any_active else "Deactivate"
+        # solara.ToggleButtonsSingle(
+        #     values=["Activate", "Deactivate"], 
+        #     mandatory=False, 
+        #     on_value=lambda v: _on_active_switched(v == "Activate"),
+        #     classes=["ma-2", "black--text"],
+        #     style={"background-color": "var(--accent)"},
+        #     )
+        # two rv.Btns on for each option
+        with solara.Div(classes=["d-flex","align-center"],style={"color": "var(--black--text)", "outline": "0.5px solid var(--accent)", "border-radius": "5px"}):
+            solara.Button(
+                label="Activate",
+                color="accent",
+                on_click=lambda: _on_active_switched(True),
+                class_="my-1 mx-2 black--text",
+            )
+            solara.Button(
+                label="Deactivate",
+                color="accent",
+                on_click=lambda: _on_active_switched(False),
+                class_="my-1 mx-2 black--text",
+            )
+        
+        return
         
     # solara.Switch(label="Set active", value=any_active, on_value=_on_active_switched)
     ToggleButton(
