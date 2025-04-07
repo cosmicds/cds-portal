@@ -338,7 +338,7 @@ def ChangeClassActivation(disabled: bool,
         label = "Activate "+ classes_string
         
     # two rv.Btns on for each option
-    with solara.Div(classes=["d-flex","align-center"],style={"color": "var(--black--text)", "outline": "0.5px solid var(--accent)", "border-radius": "5px"}):
+    with solara.Div(classes=["d-flex","align-center"],style={"color": "var(--black--text)", "border-radius": "5px"}):
         solara.Button(
             disabled=disabled,
             label="Activate",
@@ -411,23 +411,40 @@ def Page():
             with rv.Row(class_="pa-0 mb-0 mx-0"):
                 solara.Text("Manage Classes", classes=["display-1"])
 
-            with rv.Row(class_="class_buttons mb-2"):
+            with rv.Row(class_="class_buttons mb-2 mx-0"):
 
                 # ClassActionsDialog(
                 #     disabled = len(selected_rows.value) == 0, 
                 #     class_data = selected_rows.value,
                 #     on_active_changed=lambda *args: retrieve.set(retrieve.value + 1)
                 # )
-                ChangeClassActivation(
-                    disabled = len(selected_rows.value) == 0, 
-                    class_data = selected_rows.value,
-                    on_active_changed=lambda *args: retrieve.set(retrieve.value + 1),
-                    on_mixed_active_changed=set_mixed_active,
-                )      
+                solara.Button(
+                    "Launch Educator Preview",
+                    text=False,
+                    color="success",
+                    disabled=False,
+                    href=f"{settings.main.base_url}hubbles-law",
+                    target="_blank",
+                    class_="ma-2 black--text",
+                )  
+                
+                CreateClassDialog(_create_class_callback)
 
+                rv.Spacer()
+                
+                if len(data.value) > 0:
+                    ChangeClassActivation(
+                        disabled = len(selected_rows.value) == 0, 
+                        class_data = selected_rows.value,
+                        on_active_changed=lambda *args: retrieve.set(retrieve.value + 1),
+                        on_mixed_active_changed=set_mixed_active,
+                    )      
+                
+                rv.Spacer()
+                
                 solara.Button(
                     "Dashboard",
-                    color="accent",
+                    color="success",
                     href=(
                         f"/educator-dashboard?id={selected_rows.value[0]['id']}"
                         if len(selected_rows.value) == 1
@@ -442,17 +459,8 @@ def Page():
                 #             len(selected_rows.value) == 0, _delete_class_callback
                 #   
 
-                CreateClassDialog(_create_class_callback)
-
-                solara.Button(
-                    "Launch Hubble DS",
-                    text=False,
-                    color="success",
-                    disabled=False,
-                    href=f"{settings.main.base_url}hubbles-law",
-                    target="_blank",
-                    class_="ma-2 black--text",
-                )  
+                
+                
 
             with rv.Card(outlined=True, flat=True):
 
