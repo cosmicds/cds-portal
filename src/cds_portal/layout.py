@@ -22,14 +22,14 @@ def Layout(children=[]):
     show_menu = solara.use_reactive(False)
 
     def _check_user_status():
-        if info := BASE_API.educator_info is not None:
+        if (info := BASE_API.educator_info) is not None:
             Ref(GLOBAL_STATE.fields.user.user_type).set(UserType.educator)
             Ref(GLOBAL_STATE.fields.user.id).set(info["id"])
-        elif info := BASE_API.student_info is not None:
+        elif (info := BASE_API.student_info) is not None:
             Ref(GLOBAL_STATE.fields.user.user_type).set(UserType.student)
             Ref(GLOBAL_STATE.fields.user.id).set(info["id"])
 
-    solara.use_effect(_check_user_status, [auth.user.value])
+    solara.use_effect(_check_user_status, [])
 
     @solara.lab.computed
     def user_typename():
