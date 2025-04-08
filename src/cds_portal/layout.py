@@ -22,14 +22,14 @@ def Layout(children=[]):
     show_menu = solara.use_reactive(False)
 
     def _check_user_status():
-        if (info := BASE_API.educator_info):
+        if info := BASE_API.educator_info is not None:
             Ref(GLOBAL_STATE.fields.user.user_type).set(UserType.educator)
             Ref(GLOBAL_STATE.fields.user.id).set(info["id"])
-        elif (info := BASE_API.student_info):
+        elif info := BASE_API.student_info is not None:
             Ref(GLOBAL_STATE.fields.user.user_type).set(UserType.student)
             Ref(GLOBAL_STATE.fields.user.id).set(info["id"])
 
-    solara.use_effect(_check_user_status, [])
+    solara.use_effect(_check_user_status, [auth.user.value])
 
     @solara.lab.computed
     def user_typename():
@@ -50,7 +50,10 @@ def Layout(children=[]):
                 with solara.Link(solara.resolve_path("/")):
                     with rv.Avatar(class_="mr-8", width="60", tile=True):
                         rv.Img(
-                            src=str(IMG_PATH / "cosmicds_logo_transparent_for_dark_backgrounds.webp"),
+                            src=str(
+                                IMG_PATH
+                                / "cosmicds_logo_transparent_for_dark_backgrounds.webp"
+                            ),
                         )
 
                 solara.Button(
@@ -139,14 +142,14 @@ def Layout(children=[]):
                                             f"{auth.user.value['userinfo'].get('cds/email', '')}"
                                         ]
                                     )
-                                ) 
+                                )
                             user_menu_list.append(
                                 rv.ListItemSubtitle(
                                     children=[
                                         f"{user_typename.value} ID: {user_id.value}"
                                     ]
                                 )
-                            )      
+                            )
                             with rv.ListItem():
                                 rv.ListItemAvatar(
                                     children=[
@@ -221,8 +224,11 @@ def Layout(children=[]):
                                 on_click=lambda: router.push("/"),
                                 href=auth.get_logout_url("/"),
                             )
-                    if user_typename.value == "Student":
-                        solara.Text (f"{user_typename.value} ID: {user_id.value}", classes=["ml-4"])
+                    if user_typename.value == "Student" and user_id.value is not None:
+                        solara.Text(
+                            f"{user_typename.value} ID: {user_id.value}",
+                            classes=["ml-4"],
+                        )
 
         with rv.Content():
             if route_current.path == "/":
@@ -256,7 +262,9 @@ def Layout(children=[]):
 
                     with rv.Col(cols=4):
                         rv.Img(
-                            src=str(IMG_PATH / "NASA_Partner_color_300_no_outline.webp"),
+                            src=str(
+                                IMG_PATH / "NASA_Partner_color_300_no_outline.webp"
+                            ),
                             contain=True,
                             height="100",
                         )
