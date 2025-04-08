@@ -20,6 +20,7 @@ def Layout(children=[]):
     router = solara.use_router()
     route_current, routes = solara.use_route()
     show_menu = solara.use_reactive(False)
+    setup_finished = Ref(GLOBAL_STATE.fields.initial_setup_finished)
 
     def _check_user_status():
         if (info := BASE_API.educator_info) is not None:
@@ -29,7 +30,7 @@ def Layout(children=[]):
             Ref(GLOBAL_STATE.fields.user.user_type).set(UserType.student)
             Ref(GLOBAL_STATE.fields.user.id).set(info["id"])
 
-    solara.use_effect(_check_user_status, [])
+    solara.use_effect(_check_user_status, [setup_finished.value])
 
     @solara.lab.computed
     def user_typename():
