@@ -216,6 +216,12 @@ html,
     padding: 10px;
 }
 
+.dash-card {
+    max-width: 98%;
+    padding: 10px;
+    border: 1px solid var(--info) !important;
+}
+
 .cds-dashboard .v-dialog {
     box-shadow: none;
 }
@@ -225,6 +231,14 @@ html,
 }
 
 .cds-dashboard .dialog-button {
+    position:absolute;
+    right: 1.5rem;
+    bottom: 0.5rem;
+    background-color: var(--md-blue-800) !important;
+    color: white !important;
+}
+
+.dash-dialog-button {
     position:absolute;
     right: 1.5rem;
     bottom: 0.5rem;
