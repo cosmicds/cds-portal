@@ -270,13 +270,15 @@ def Layout(children=[]):
                         )
 
                     with rv.Col(cols=4):
-                        rv.Img(
-                            src=str(
-                                IMG_PATH / "NASA_Partner_color_300_no_outline.webp"
-                            ),
-                            contain=True,
-                            height="100",
-                        )
+                        with rv.Col(style_="display: flex; flex-direction: column; align-items: center;"):
+                            solara.Text("Former")
+                            rv.Img(
+                                src=str(
+                                    IMG_PATH / "NASA_Partner_color_300_no_outline.webp"
+                                ),
+                                contain=True,
+                                height="100",
+                            )
 
                     with rv.Col(cols=4):
                         rv.Img(
