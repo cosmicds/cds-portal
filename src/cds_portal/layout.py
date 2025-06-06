@@ -258,7 +258,7 @@ def Layout(children=[]):
             with rv.Container(style="max-width: 1200px"):
 
                 with rv.Row():
-                    with rv.Col(cols=4):
+                    with rv.Col(cols=6):
                         solara.Text("Cosmic Data Stories", classes=["title"])
                         solara.HTML(
                             unsafe_innerHTML="""
@@ -269,16 +269,8 @@ def Layout(children=[]):
                             classes=["text-h6"],
                         )
 
-                    with rv.Col(cols=4):
-                        with rv.Col(style_="display: flex; flex-direction: column; align-items: center;"):
-                            solara.Text("Former")
-                            rv.Img(
-                                src=str(
-                                    IMG_PATH / "NASA_Partner_color_300_no_outline.webp"
-                                ),
-                                contain=True,
-                                height="100",
-                            )
+                    with rv.Col(cols=2):
+                        pass
 
                     with rv.Col(cols=4):
                         rv.Img(
