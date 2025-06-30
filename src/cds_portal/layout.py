@@ -44,14 +44,14 @@ def Layout(children=[]):
             return "Student"
         else:
             return ""
-    print()
+
     url_params = use_router_search_params()
     if url_params.get("no_layout", '').lower() == "true":
         # If the page is embedded, we don't want to show the app bar or footer
         with rv.App(dark=True) as main:
             solara.Title("Cosmic Data Stories")
             with rv.Content():
-                with rv.Container(children=children, class_="solara-embeded"):
+                with rv.Container(children=children, class_="solara-embedded"):
                     pass
         return main
 
