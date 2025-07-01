@@ -108,3 +108,7 @@ def Page():
     )
 
     solara.FigurePlotly(fig)
+    solara.Markdown("""**Data:**
+                    TSI: Historical Total Solar Irradiance Reconstruction via [LASP](https://lasp.colorado.edu/lisird/data/historical_tsi), 
+                    Sunspot Number: [AAVSO](https://www.aavso.org/solar) American Relative Sunspot Number via [LASP](https://lasp.colorado.edu/lisird/data/american_relative_sunspot_number_daily)
+                    """)
