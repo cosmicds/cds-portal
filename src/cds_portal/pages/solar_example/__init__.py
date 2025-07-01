@@ -23,7 +23,7 @@ sunspot_df['Date'] = sunspot_df['Year'].apply(decimal_year_to_date)
 tsi_df['Date'] = tsi_df['Year'].apply(decimal_year_to_date)
 
 # Solar cycle start dates and labels (Cycle 18 to 24)
-solar_cycle_starts = [1944.2, 1954.3, 1964.9, 1976.5, 1986.8, 1996.4, 2008.9]
+solar_cycle_starts = [1944.12, 1954.29, 1964.79, 1976.20, 1986.71, 1996.62, 2008.96]
 solar_cycle_labels = [f"Cycle {n}" for n in range(18, 25)]
 solar_cycle_dates = pd.Series(solar_cycle_starts).apply(decimal_year_to_date)
 
@@ -108,3 +108,9 @@ def Page():
     )
 
     solara.FigurePlotly(fig)
+    # NB: We achieve line breaks via two spaces at the end of each line
+    solara.Markdown("""**Data:**  
+                    TSI: Historical Total Solar Irradiance Reconstruction via [LASP](https://lasp.colorado.edu/lisird/data/historical_tsi)   
+                    Sunspot Number: [AAVSO](https://www.aavso.org/solar)  
+                    American Relative Sunspot Number via [LASP](https://lasp.colorado.edu/lisird/data/american_relative_sunspot_number_daily)
+                    """)
